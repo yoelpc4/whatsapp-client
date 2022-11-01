@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Sender\GetSenders;
 use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
+use App\Http\Resources\SenderResource;
 use App\Models\Sender;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -40,16 +41,6 @@ class SenderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreSenderRequest  $request
@@ -63,30 +54,19 @@ class SenderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Sender  $sender
-     * @return \Illuminate\Http\Response
+     * @param  Sender  $sender
+     * @return SenderResource
      */
-    public function show(Sender $sender)
+    public function show(Sender $sender): SenderResource
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Sender  $sender
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Sender $sender)
-    {
-        //
+        return new SenderResource($sender);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateSenderRequest  $request
-     * @param  \App\Models\Sender  $sender
+     * @param  Sender  $sender
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateSenderRequest $request, Sender $sender)
@@ -97,7 +77,7 @@ class SenderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Sender  $sender
+     * @param  Sender  $sender
      * @return \Illuminate\Http\Response
      */
     public function destroy(Sender $sender)
