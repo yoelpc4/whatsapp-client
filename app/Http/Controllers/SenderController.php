@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
 use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
 use App\Http\Resources\SenderResource;
 use App\Models\Sender;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Throwable;
 
 class SenderController extends Controller
 {
@@ -78,10 +82,14 @@ class SenderController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Sender  $sender
-     * @return \Illuminate\Http\Response
+     * @param  DeleteSender  $deleteSender
+     * @return RedirectResponse
+     * @throws Throwable
      */
-    public function destroy(Sender $sender)
+    public function destroy(Sender $sender, DeleteSender $deleteSender): RedirectResponse
     {
-        //
+        $deleteSender->execute($sender);
+
+        return back(SymfonyResponse::HTTP_SEE_OTHER);
     }
 }

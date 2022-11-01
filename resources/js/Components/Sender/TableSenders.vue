@@ -69,15 +69,15 @@ defineEmits(['view', 'edit', 'delete'])
                             <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
                                 <div class="px-2">
                                     <ul class="divide-y divide-gray-200">
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('view', sender.id)">
+                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('view', sender)">
                                             <InformationCircleIcon class="w-5 h-5 mr-3"/> View
                                         </li>
 
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('edit', sender.id)">
+                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('edit', sender)">
                                             <PencilIcon class="w-5 h-5 mr-3"/> Edit
                                         </li>
 
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('delete', sender.id)">
+                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('delete', sender)">
                                             <TrashIcon class="w-5 h-5 mr-3"/> Delete
                                         </li>
                                     </ul>
