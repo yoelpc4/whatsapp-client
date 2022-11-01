@@ -15,9 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name'  => 'Admin',
-            'email' => 'admin@whatsapp.com',
-        ]);
+        $this->call(UserSeeder::class);
+
+        $this->call(SenderSeeder::class);
     }
 }
