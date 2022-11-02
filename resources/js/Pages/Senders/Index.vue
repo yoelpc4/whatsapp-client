@@ -1,12 +1,12 @@
 <script setup>
 import {ref} from 'vue';
+import { Link } from '@inertiajs/inertia-vue3';
+import {PlusIcon} from '@heroicons/vue/24/outline'
 import AppLayout from '@/Layouts/AppLayout.vue';
-import FormCreateSender from '@/Components/Sender/FormCreateSender.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
 import ModalEditSender from '@/Components/Sender/ModalEditSender.vue';
 import ModalLinkDevice from '@/Components/Sender/ModalLinkDevice.vue';
 import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
-import SectionBorder from '@/Components/SectionBorder.vue';
 import TableSenders from '@/Components/Sender/TableSenders.vue';
 
 defineProps({
@@ -93,16 +93,18 @@ function onCloseModalDeleteSender() {
 <template>
     <AppLayout title="Senders">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Senders
-            </h2>
+            <div class="flex justify-between items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Senders
+                </h2>
+
+                <Link :href="route('senders.create')" class="flex justify-center items-center">
+                    <PlusIcon class="w-3 h-3 mr-2" /> Create
+                </Link>
+            </div>
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <FormCreateSender/>
-
-            <SectionBorder/>
-
             <TableSenders
                 :senders="senders"
                 @linkDevice="onOpenModalLinkDevice"

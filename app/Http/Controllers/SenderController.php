@@ -62,6 +62,16 @@ class SenderController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Senders/Create');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  StoreSenderRequest  $request
@@ -73,9 +83,10 @@ class SenderController extends Controller
     {
         $createSender->execute($request->user(), $request->validated());
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER)
-            ->with('banner', 'Sender successfully created')
-            ->with('bannerStyle', 'success');
+        return redirect()
+            ->route('senders.index')
+            ->with('flash.banner', 'Sender successfully created')
+            ->with('flash.bannerStyle', 'success');
     }
 
     /**
@@ -103,8 +114,8 @@ class SenderController extends Controller
         $updateSender->execute($sender, $request->validated());
 
         return back(SymfonyResponse::HTTP_SEE_OTHER)
-            ->with('banner', 'Sender successfully updated')
-            ->with('bannerStyle', 'success');
+            ->with('flash.banner', 'Sender successfully updated')
+            ->with('flash.bannerStyle', 'success');
     }
 
     /**
@@ -120,8 +131,8 @@ class SenderController extends Controller
         $deleteSender->execute($sender);
 
         return back(SymfonyResponse::HTTP_SEE_OTHER)
-            ->with('banner', 'Sender successfully deleted')
-            ->with('bannerStyle', 'success');
+            ->with('flash.banner', 'Sender successfully deleted')
+            ->with('flash.bannerStyle', 'success');
     }
 
     /**
