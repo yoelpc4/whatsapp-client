@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
 use App\Http\Requests\StoreSenderRequest;
@@ -47,12 +48,16 @@ class SenderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreSenderRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param  StoreSenderRequest  $request
+     * @param  CreateSender  $createSender
+     * @return RedirectResponse
+     * @throws Throwable
      */
-    public function store(StoreSenderRequest $request)
+    public function store(StoreSenderRequest $request, CreateSender $createSender): RedirectResponse
     {
-        //
+        $createSender->execute($request->user(), $request->validated());
+
+        return back(SymfonyResponse::HTTP_SEE_OTHER);
     }
 
     /**

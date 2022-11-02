@@ -1,9 +1,11 @@
 <script setup>
 import {ref} from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
-import TableSenders from '@/Components/Sender/TableSenders.vue';
+import FormCreateSender from '@/Components/Sender/FormCreateSender.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
+import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
+import SectionBorder from '@/Components/SectionBorder.vue';
+import TableSenders from '@/Components/Sender/TableSenders.vue';
 
 defineProps({
     senders: {
@@ -54,13 +56,17 @@ function onCloseModalDeleteSender() {
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <FormCreateSender />
+
+            <SectionBorder />
+
             <TableSenders :senders="senders" @view="onOpenModalViewSender" @delete="onOpenModalDeleteSender" />
         </div>
+
+        <ModalViewSender :show="showModalViewSender" :sender="sender" @close="onCloseModalViewSender" />
+
+        <ModalDeleteSender :show="showModalDeleteSender" :sender="sender" @close="onCloseModalDeleteSender" />
     </AppLayout>
-
-    <ModalViewSender :show="showModalViewSender" :sender="sender" @close="onCloseModalViewSender" />
-
-    <ModalDeleteSender :show="showModalDeleteSender" :sender="sender" @close="onCloseModalDeleteSender" />
 </template>
 
 <style scoped>

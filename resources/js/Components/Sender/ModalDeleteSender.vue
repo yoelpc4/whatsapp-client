@@ -17,10 +17,10 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const form = useForm()
+const deleteSenderForm = useForm()
 
 function deleteSender() {
-    form.delete(route('senders.destroy', props.sender), {
+    deleteSenderForm.delete(route('senders.destroy', props.sender), {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => emit('close')
@@ -45,8 +45,8 @@ function deleteSender() {
 
             <DangerButton
                 class="ml-3"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :class="{ 'opacity-25': deleteSenderForm.processing }"
+                :disabled="deleteSenderForm.processing"
                 @click="deleteSender"
             >
                 Delete

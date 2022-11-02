@@ -15,80 +15,88 @@ defineEmits(['view', 'edit', 'delete'])
 </script>
 
 <template>
-    <Table :meta="senders">
-        <template #head="{ header }">
-            <tr class="font-medium text-xs uppercase text-left tracking-wider text-gray-500 py-3 px-6">
-                <HeaderCell :cell="header('index')">
-                    #
-                </HeaderCell>
-                <HeaderCell :cell="header('name')">
-                    Name
-                </HeaderCell>
-                <HeaderCell :cell="header('phone')">
-                    Phone
-                </HeaderCell>
-                <HeaderCell :cell="header('created_at')">
-                    Created at
-                </HeaderCell>
-                <HeaderCell :cell="header('actions')">
-                    Actions
-                </HeaderCell>
-            </tr>
-        </template>
+    <div class="px-4 py-5 bg-white sm:p-6 shadow">
+        <Table :meta="senders">
+            <template #head="{ header }">
+                <tr class="font-medium text-xs uppercase text-left tracking-wider text-gray-500 py-3 px-6">
+                    <HeaderCell :cell="header('index')">
+                        #
+                    </HeaderCell>
+                    <HeaderCell :cell="header('name')">
+                        Name
+                    </HeaderCell>
+                    <HeaderCell :cell="header('phone')">
+                        Phone
+                    </HeaderCell>
+                    <HeaderCell :cell="header('created_at')">
+                        Created at
+                    </HeaderCell>
+                    <HeaderCell :cell="header('actions')">
+                        Actions
+                    </HeaderCell>
+                </tr>
+            </template>
 
-        <template #body="{ show }">
-            <tr v-for="(sender, index) of senders.data" :key="sender.id">
-                <td>
-                    {{ index + 1 }}
-                </td>
-                <td v-show="show('name')">
-                    {{ sender.name }}
-                </td>
-                <td v-show="show('phone')">
-                    {{ sender.phone }}
-                </td>
-                <td v-show="show('created_at')">
-                    {{ formatDate(sender.created_at) }}
-                </td>
-                <td>
-                    <Dropdown align="left" width="24">
-                        <template #trigger>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-5 w-5 text-gray-400 cursor-pointer"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
-                                />
-                            </svg>
-                        </template>
+            <template #body="{ show }">
+                <tr v-for="(sender, index) of senders.data" :key="sender.id">
+                    <td>
+                        {{ index + 1 }}
+                    </td>
+                    <td v-show="show('name')">
+                        {{ sender.name }}
+                    </td>
+                    <td v-show="show('phone')">
+                        {{ sender.phone }}
+                    </td>
+                    <td v-show="show('created_at')">
+                        {{ formatDate(sender.created_at) }}
+                    </td>
+                    <td>
+                        <Dropdown align="left" width="24">
+                            <template #trigger>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-400 cursor-pointer"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                                    />
+                                </svg>
+                            </template>
 
-                        <template #content>
-                            <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
-                                <div class="px-2">
-                                    <ul class="divide-y divide-gray-200">
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('view', sender)">
-                                            <InformationCircleIcon class="w-5 h-5 mr-3"/> View
-                                        </li>
+                            <template #content>
+                                <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
+                                    <div class="px-2">
+                                        <ul class="divide-y divide-gray-200">
+                                            <li class="py-2 flex items-center cursor-pointer"
+                                                @click.prevent="$emit('view', sender)">
+                                                <InformationCircleIcon class="w-5 h-5 mr-3"/>
+                                                View
+                                            </li>
 
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('edit', sender)">
-                                            <PencilIcon class="w-5 h-5 mr-3"/> Edit
-                                        </li>
+                                            <li class="py-2 flex items-center cursor-pointer"
+                                                @click.prevent="$emit('edit', sender)">
+                                                <PencilIcon class="w-5 h-5 mr-3"/>
+                                                Edit
+                                            </li>
 
-                                        <li class="py-2 flex items-center cursor-pointer" @click.prevent="$emit('delete', sender)">
-                                            <TrashIcon class="w-5 h-5 mr-3"/> Delete
-                                        </li>
-                                    </ul>
+                                            <li class="py-2 flex items-center cursor-pointer"
+                                                @click.prevent="$emit('delete', sender)">
+                                                <TrashIcon class="w-5 h-5 mr-3"/>
+                                                Delete
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </template>
-                    </Dropdown>
-                </td>
-            </tr>
-        </template>
-    </Table>
+                            </template>
+                        </Dropdown>
+                    </td>
+                </tr>
+            </template>
+        </Table>
+    </div>
 </template>
 
 <style scoped>
