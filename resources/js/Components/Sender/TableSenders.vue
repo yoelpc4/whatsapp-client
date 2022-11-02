@@ -1,6 +1,6 @@
 <script setup>
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-import {InformationCircleIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/outline'
+import {InformationCircleIcon, PencilIcon, QrCodeIcon, TrashIcon} from '@heroicons/vue/24/outline'
 import {formatDate} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
@@ -11,7 +11,7 @@ defineProps({
     }
 })
 
-defineEmits(['view', 'edit', 'delete'])
+defineEmits(['delete', 'edit', 'linkDevice', 'view'])
 </script>
 
 <template>
@@ -74,6 +74,12 @@ defineEmits(['view', 'edit', 'delete'])
                                                 @click.prevent="$emit('view', sender)">
                                                 <InformationCircleIcon class="w-5 h-5 mr-3"/>
                                                 View
+                                            </li>
+
+                                            <li class="py-2 flex items-center cursor-pointer"
+                                                @click.prevent="$emit('linkDevice', sender)">
+                                                <QrCodeIcon class="w-5 h-5 mr-3"/>
+                                                Link Device
                                             </li>
 
                                             <li class="py-2 flex items-center cursor-pointer"

@@ -10,6 +10,9 @@ use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
 use App\Http\Resources\SenderResource;
 use App\Models\Sender;
+use App\Services\WhatsappService;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,6 +23,18 @@ use Throwable;
 
 class SenderController extends Controller
 {
+    private WhatsappService $whatsappService;
+
+    /**
+     * Create a new sender controller
+     *
+     * @param  WhatsappService  $whatsappService
+     */
+    public function __construct(WhatsappService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -58,7 +73,9 @@ class SenderController extends Controller
     {
         $createSender->execute($request->user(), $request->validated());
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER);
+        return back(SymfonyResponse::HTTP_SEE_OTHER)
+            ->with('banner', 'Sender successfully created')
+            ->with('bannerStyle', 'success');
     }
 
     /**
@@ -85,7 +102,9 @@ class SenderController extends Controller
     {
         $updateSender->execute($sender, $request->validated());
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER);
+        return back(SymfonyResponse::HTTP_SEE_OTHER)
+            ->with('banner', 'Sender successfully updated')
+            ->with('bannerStyle', 'success');
     }
 
     /**
@@ -100,6 +119,31 @@ class SenderController extends Controller
     {
         $deleteSender->execute($sender);
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER);
+        return back(SymfonyResponse::HTTP_SEE_OTHER)
+            ->with('banner', 'Sender successfully deleted')
+            ->with('bannerStyle', 'success');
+    }
+
+    /**
+     * Link sender device
+     *
+     * @param  Sender  $sender
+     * @return JsonResponse
+     */
+    public function linkDevice(Sender $sender): JsonResponse
+    {
+        try {
+            $response = $this->whatsappService->createSession($sender->phone);
+
+            if (! isset($response['data']['qrCodeDataUrl'])) {
+                return response()->json($response['message'], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return response()->json([
+                'qr_code_data_url' => $response['data']['qrCodeDataUrl'],
+            ]);
+        } catch (RequestException $e) {
+            return response()->json($e->getMessage(), SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

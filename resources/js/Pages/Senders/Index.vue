@@ -4,6 +4,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import FormCreateSender from '@/Components/Sender/FormCreateSender.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
 import ModalEditSender from '@/Components/Sender/ModalEditSender.vue';
+import ModalLinkDevice from '@/Components/Sender/ModalLinkDevice.vue';
 import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import TableSenders from '@/Components/Sender/TableSenders.vue';
@@ -17,7 +18,11 @@ defineProps({
 
 const sender = ref(null)
 
+const qrCodeDataUrl = ref(null)
+
 const showModalViewSender = ref(false)
+
+const showModalLinkDevice = ref(false)
 
 const showModalEditSender = ref(false)
 
@@ -35,6 +40,27 @@ function onCloseModalViewSender() {
     showModalViewSender.value = false
 
     sender.value = null
+}
+
+async function onOpenModalLinkDevice(data) {
+    const [showSenderResponse, createSessionResponse] = await Promise.all([
+        axios.get(route('senders.show', data)),
+        axios.get(route('senders.link_device', data))
+    ])
+
+    sender.value = showSenderResponse.data
+
+    qrCodeDataUrl.value = createSessionResponse.data.qr_code_data_url
+
+    showModalLinkDevice.value = true
+}
+
+function onCloseModalLinkDevice() {
+    showModalLinkDevice.value = false
+
+    sender.value = null
+
+    showModalLinkDevice.value = null
 }
 
 async function onOpenModalEditSender(data) {
@@ -79,6 +105,7 @@ function onCloseModalDeleteSender() {
 
             <TableSenders
                 :senders="senders"
+                @linkDevice="onOpenModalLinkDevice"
                 @delete="onOpenModalDeleteSender"
                 @edit="onOpenModalEditSender"
                 @view="onOpenModalViewSender"
@@ -86,6 +113,13 @@ function onCloseModalDeleteSender() {
         </div>
 
         <ModalViewSender v-if="showModalViewSender && sender" :sender="sender" @close="onCloseModalViewSender"/>
+
+        <ModalLinkDevice
+            v-if="showModalLinkDevice && sender && qrCodeDataUrl"
+            :sender="sender"
+            :qrCodeDataUrl="qrCodeDataUrl"
+            @close="onCloseModalLinkDevice"
+        />
 
         <ModalEditSender v-if="showModalEditSender && sender" :sender="sender" @close="onCloseModalEditSender"/>
 
