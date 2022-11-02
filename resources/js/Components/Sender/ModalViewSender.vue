@@ -4,13 +4,9 @@ import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 defineProps({
-    show: {
-        type: Boolean,
-        default: false
-    },
     sender: {
         type: Object,
-        default: null
+        required: true
     },
 })
 
@@ -18,13 +14,13 @@ defineEmits(['close'])
 </script>
 
 <template>
-    <DialogModal :show="show" @close="$emit('close')">
+    <DialogModal show @close="$emit('close')">
         <template #title>
             View Sender
         </template>
 
         <template #content>
-            <div v-if="sender">
+            <div>
                 <ul role="list" class="divide-y divide-gray-200">
                     <li class="py-3 sm:py-4">
                         <div class="flex items-center space-x-4">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
+use App\Actions\Sender\UpdateSender;
 use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
 use App\Http\Resources\SenderResource;
@@ -28,7 +29,7 @@ class SenderController extends Controller
      */
     public function index(Request $request, GetSenders $getSenders): Response
     {
-        $senders = $getSenders->execute($request->all());
+        $senders = $getSenders->execute($request->user(), $request->all());
 
         return Inertia::render('Senders/Index', [
             'senders' => $senders,
@@ -74,13 +75,17 @@ class SenderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateSenderRequest  $request
+     * @param  UpdateSenderRequest  $request
      * @param  Sender  $sender
-     * @return \Illuminate\Http\Response
+     * @param  UpdateSender  $updateSender
+     * @return RedirectResponse
+     * @throws Throwable
      */
-    public function update(UpdateSenderRequest $request, Sender $sender)
+    public function update(UpdateSenderRequest $request, Sender $sender, UpdateSender $updateSender): RedirectResponse
     {
-        //
+        $updateSender->execute($sender, $request->validated());
+
+        return back(SymfonyResponse::HTTP_SEE_OTHER);
     }
 
     /**

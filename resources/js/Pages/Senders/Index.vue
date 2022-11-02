@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FormCreateSender from '@/Components/Sender/FormCreateSender.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
+import ModalEditSender from '@/Components/Sender/ModalEditSender.vue';
 import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import TableSenders from '@/Components/Sender/TableSenders.vue';
@@ -18,6 +19,8 @@ const sender = ref(null)
 
 const showModalViewSender = ref(false)
 
+const showModalEditSender = ref(false)
+
 const showModalDeleteSender = ref(false)
 
 async function onOpenModalViewSender(data) {
@@ -30,6 +33,20 @@ async function onOpenModalViewSender(data) {
 
 function onCloseModalViewSender() {
     showModalViewSender.value = false
+
+    sender.value = null
+}
+
+async function onOpenModalEditSender(data) {
+    const response = await axios.get(route('senders.show', data))
+
+    sender.value = response.data
+
+    showModalEditSender.value = true
+}
+
+function onCloseModalEditSender() {
+    showModalEditSender.value = false
 
     sender.value = null
 }
@@ -56,16 +73,23 @@ function onCloseModalDeleteSender() {
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <FormCreateSender />
+            <FormCreateSender/>
 
-            <SectionBorder />
+            <SectionBorder/>
 
-            <TableSenders :senders="senders" @view="onOpenModalViewSender" @delete="onOpenModalDeleteSender" />
+            <TableSenders
+                :senders="senders"
+                @delete="onOpenModalDeleteSender"
+                @edit="onOpenModalEditSender"
+                @view="onOpenModalViewSender"
+            />
         </div>
 
-        <ModalViewSender :show="showModalViewSender" :sender="sender" @close="onCloseModalViewSender" />
+        <ModalViewSender v-if="showModalViewSender && sender" :sender="sender" @close="onCloseModalViewSender"/>
 
-        <ModalDeleteSender :show="showModalDeleteSender" :sender="sender" @close="onCloseModalDeleteSender" />
+        <ModalEditSender v-if="showModalEditSender && sender" :sender="sender" @close="onCloseModalEditSender"/>
+
+        <ModalDeleteSender v-if="showModalDeleteSender && sender" :sender="sender" @close="onCloseModalDeleteSender"/>
     </AppLayout>
 </template>
 

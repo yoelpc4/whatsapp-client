@@ -21,7 +21,7 @@ function onSubmit() {
 </script>
 
 <template>
-    <FormSection @submit="onSubmit">
+    <FormSection id="form-create-sender" @submit="onSubmit">
         <template #title>
             Create Sender
         </template>
@@ -57,6 +57,7 @@ function onSubmit() {
                 class="ml-3"
                 :class="{ 'opacity-25': formCreateSender.processing }"
                 :disabled="formCreateSender.processing"
+                form="form-create-sender"
             >
                 Create
             </PrimaryButton>

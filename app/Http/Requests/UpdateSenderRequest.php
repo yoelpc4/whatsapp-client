@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Sender;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSenderRequest extends FormRequest
 {
@@ -11,9 +13,9 @@ class UpdateSenderRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return false;
+        return $this->sender->user_id === $this->user()->id;
     }
 
     /**
@@ -21,10 +23,14 @@ class UpdateSenderRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            //
+            'name'  => 'required|string',
+            'phone' => [
+                'required',
+                Rule::unique(Sender::class, 'phone')->ignore($this->sender),
+            ],
         ];
     }
 }

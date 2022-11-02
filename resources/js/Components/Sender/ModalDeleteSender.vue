@@ -5,13 +5,9 @@ import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
-    show: {
-        type: Boolean,
-        default: false
-    },
     sender: {
         type: Object,
-        default: null
+        required: true
     },
 })
 
@@ -29,12 +25,12 @@ function deleteSender() {
 </script>
 
 <template>
-    <ConfirmationModal :show="show" @close="$emit('close')">
+    <ConfirmationModal show @close="$emit('close')">
         <template #title>
             Delete Sender
         </template>
 
-        <template v-if="sender" #content>
+        <template #content>
             Are you sure you would like to delete sender {{ sender.name }}?
         </template>
 

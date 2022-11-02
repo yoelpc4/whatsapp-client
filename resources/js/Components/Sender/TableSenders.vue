@@ -15,7 +15,7 @@ defineEmits(['view', 'edit', 'delete'])
 </script>
 
 <template>
-    <div class="px-4 py-5 bg-white sm:p-6 shadow">
+    <div class="p-4 bg-white sm:p-6 shadow">
         <Table :meta="senders">
             <template #head="{ header }">
                 <tr class="font-medium text-xs uppercase text-left tracking-wider text-gray-500 py-3 px-6">
