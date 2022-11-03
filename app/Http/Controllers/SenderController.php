@@ -142,7 +142,8 @@ class SenderController extends Controller
     {
         $deleteSender->execute($sender);
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER)
+        return redirect()
+            ->route('senders.index')
             ->with('flash.banner', 'Sender successfully deleted')
             ->with('flash.bannerStyle', 'success');
     }

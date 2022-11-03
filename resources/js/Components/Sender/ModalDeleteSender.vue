@@ -17,8 +17,7 @@ const deleteSenderForm = useForm()
 
 function deleteSender() {
     deleteSenderForm.delete(route('senders.destroy', props.sender), {
-        preserveScroll: true,
-        preserveState: true,
+        preserveScroll: false,
         onSuccess: () => emit('close')
     })
 }
