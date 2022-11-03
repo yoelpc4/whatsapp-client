@@ -37,6 +37,9 @@ class SenderController extends Controller
 
         return Inertia::render('Senders/Index', [
             'senders' => $senders,
+            'can'     => [
+                'create_sender' => $request->user()->can('create', Sender::class),
+            ],
         ])->table(function (InertiaTable $table) {
             $table->column(key: 'index', label: '#')
                 ->column(key: 'user.name', label: 'User', sortable: true, searchable: true)
