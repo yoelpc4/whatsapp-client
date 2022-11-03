@@ -1,10 +1,9 @@
 <script setup>
 import {ref} from 'vue';
-import { Link } from '@inertiajs/inertia-vue3';
+import {Link} from '@inertiajs/inertia-vue3';
 import {PlusIcon} from '@heroicons/vue/24/outline'
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
-import ModalEditSender from '@/Components/Sender/ModalEditSender.vue';
 import ModalLinkDevice from '@/Components/Sender/ModalLinkDevice.vue';
 import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
 import TableSenders from '@/Components/Sender/TableSenders.vue';
@@ -23,8 +22,6 @@ const qrCodeDataUrl = ref(null)
 const showModalViewSender = ref(false)
 
 const showModalLinkDevice = ref(false)
-
-const showModalEditSender = ref(false)
 
 const showModalDeleteSender = ref(false)
 
@@ -63,20 +60,6 @@ function onCloseModalLinkDevice() {
     showModalLinkDevice.value = null
 }
 
-async function onOpenModalEditSender(data) {
-    const response = await axios.get(route('senders.show', data))
-
-    sender.value = response.data
-
-    showModalEditSender.value = true
-}
-
-function onCloseModalEditSender() {
-    showModalEditSender.value = false
-
-    sender.value = null
-}
-
 function onOpenModalDeleteSender(data) {
     sender.value = data
 
@@ -109,7 +92,6 @@ function onCloseModalDeleteSender() {
                 :senders="senders"
                 @linkDevice="onOpenModalLinkDevice"
                 @delete="onOpenModalDeleteSender"
-                @edit="onOpenModalEditSender"
                 @view="onOpenModalViewSender"
             />
         </div>
@@ -122,8 +104,6 @@ function onCloseModalDeleteSender() {
             :qrCodeDataUrl="qrCodeDataUrl"
             @close="onCloseModalLinkDevice"
         />
-
-        <ModalEditSender v-if="showModalEditSender && sender" :sender="sender" @close="onCloseModalEditSender"/>
 
         <ModalDeleteSender v-if="showModalDeleteSender && sender" :sender="sender" @close="onCloseModalDeleteSender"/>
     </AppLayout>

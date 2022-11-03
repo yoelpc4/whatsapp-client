@@ -101,6 +101,17 @@ class SenderController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  Sender  $sender
+     * @return Response
+     */
+    public function edit(Sender $sender): Response
+    {
+        return Inertia::render('Senders/Edit', compact('sender'));
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  UpdateSenderRequest  $request
@@ -113,7 +124,8 @@ class SenderController extends Controller
     {
         $updateSender->execute($sender, $request->validated());
 
-        return back(SymfonyResponse::HTTP_SEE_OTHER)
+        return redirect()
+            ->route('senders.index')
             ->with('flash.banner', 'Sender successfully updated')
             ->with('flash.bannerStyle', 'success');
     }

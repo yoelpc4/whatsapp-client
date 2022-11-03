@@ -1,4 +1,5 @@
 <script setup>
+import {Link} from '@inertiajs/inertia-vue3';
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {InformationCircleIcon, PencilIcon, QrCodeIcon, TrashIcon} from '@heroicons/vue/24/outline'
 import {formatDate} from '@/helpers.js';
@@ -82,11 +83,13 @@ defineEmits(['delete', 'edit', 'linkDevice', 'view'])
                                                 Link Device
                                             </li>
 
-                                            <li class="py-2 flex items-center cursor-pointer"
-                                                @click.prevent="$emit('edit', sender)">
-                                                <PencilIcon class="w-5 h-5 mr-3"/>
-                                                Edit
-                                            </li>
+                                            <Link :href="route('senders.edit', sender)"
+                                                  class="flex items-center">
+                                                <li class="py-2 flex items-center cursor-pointer">
+                                                    <PencilIcon class="w-5 h-5 mr-3"/>
+                                                    Edit
+                                                </li>
+                                            </Link>
 
                                             <li class="py-2 flex items-center cursor-pointer"
                                                 @click.prevent="$emit('delete', sender)">
