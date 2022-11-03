@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Actions\Sender;
+namespace App\Actions\Receiver;
 
-use App\Models\Sender;
+use App\Models\Receiver;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,7 +10,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class GetSenders
+class GetReceivers
 {
     /**
      * Execute the action
@@ -20,42 +20,50 @@ class GetSenders
      */
     public function execute(array $data): LengthAwarePaginator
     {
-        $sender = new Sender;
+        $receiver = new Receiver;
 
         $user = new User;
 
-        return QueryBuilder::for($sender)
+        return QueryBuilder::for($receiver)
             ->with('user:id,name')
             ->select([
-                $sender->qualifyColumn('id'),
-                $sender->qualifyColumn('user_id'),
-                $sender->qualifyColumn('phone'),
-                $sender->qualifyColumn('created_at'),
+                $receiver->qualifyColumn('id'),
+                $receiver->qualifyColumn('user_id'),
+                $receiver->qualifyColumn('type'),
+                $receiver->qualifyColumn('name'),
+                $receiver->qualifyColumn('whatsapp_id'),
+                $receiver->qualifyColumn('created_at'),
             ])
             ->leftJoin(
                 $user->getTable(),
-                $sender->user()->getQualifiedParentKeyName(),
+                $receiver->user()->getQualifiedParentKeyName(),
                 '=',
-                $sender->user()->getQualifiedForeignKeyName()
+                $receiver->user()->getQualifiedForeignKeyName()
             )
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('user_id'),
                 AllowedFilter::exact('user.id'),
                 'user.name',
-                'phone',
+                AllowedFilter::exact('type'),
+                'name',
+                'whatsapp_id',
                 'created_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
-                        $query->whereHas('user', fn(Builder $query) => $query->where('name', 'LIKE', "%{$value}%"))
-                            ->orWhere('phone', 'LIKE', "%{$value}%");
+                        $query
+                            ->whereHas('user', fn(Builder $query) => $query->where('name', 'LIKE', "%{$value}%"))
+                            ->orWhere('name', 'LIKE', "%{$value}%")
+                            ->orWhere('whatsapp_id', 'LIKE', "%{$value}%");
                     });
                 }),
             ])
             ->allowedSorts([
                 'id',
                 AllowedSort::field('user.name', $user->qualifyColumn('name')),
-                'phone',
+                'type',
+                'name',
+                'whatsapp_id',
                 'created_at',
             ])
             ->defaultSort('-created_at')

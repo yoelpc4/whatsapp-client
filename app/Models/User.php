@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -53,6 +54,16 @@ class User extends Authenticatable
     public function sender(): HasOne
     {
         return $this->hasOne(Sender::class);
+    }
+
+    /**
+     * User has many receivers
+     *
+     * @return HasMany
+     */
+    public function receivers(): HasMany
+    {
+        return $this->hasMany(Receiver::class);
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReceiverController;
 use App\Http\Controllers\SenderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,7 +23,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+
+    Route::resource('receivers', ReceiverController::class);
 
     Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
         Route::get('{sender}/link-device', [SenderController::class, 'linkDevice'])->name('link_device');
