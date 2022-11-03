@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class WhatsappService
@@ -23,15 +24,13 @@ class WhatsappService
      * Create a new session
      *
      * @param  string  $phone
-     * @return array
+     * @return Response
      * @throws RequestException
      */
-    public function createSession(string $phone): array
+    public function createSession(string $phone): Response
     {
-        $response = $this->http->post('sessions', [
+        return $this->http->post('sessions', [
             'id' => $phone,
         ])->throw();
-
-        return $response->json();
     }
 }

@@ -1,6 +1,7 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import {Link} from '@inertiajs/inertia-vue3';
+import {ChevronLeftIcon} from '@heroicons/vue/24/outline'
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
     sender: {
@@ -13,21 +14,28 @@ defineProps({
     },
 })
 
-defineEmits(['close'])
-
 setTimeout(() => {
     window.location.reload()
-}, 20000)
+}, 60000)
 </script>
 
 <template>
-    <DialogModal show @close="$emit('close')">
-        <template #title>
-            Link Device
+    <AppLayout title="Senders">
+        <template #header>
+            <div class="flex justify-between items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Link Device
+                </h2>
+
+                <Link :href="route('senders.index')" class="flex justify-center items-center">
+                    <ChevronLeftIcon class="w-3 h-3 mr-2"/>
+                    Back
+                </Link>
+            </div>
         </template>
 
-        <template #content>
-            <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="px-4 py-5 bg-white sm:p-6 shadow">
                 <ul role="list" class="divide-y divide-gray-200">
                     <li class="py-3 sm:py-4">
                         <div class="flex items-center space-x-4">
@@ -69,21 +77,15 @@ setTimeout(() => {
                                 </div>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    QR Code will refresh every 20 seconds, You do not need to do anything after scanned the QR.
+                                    QR Code will refresh every 1 minute, You do not need to do anything after scanned the QR.
                                 </p>
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
-        </template>
-
-        <template #footer>
-            <SecondaryButton @click="$emit('close')">
-                Close
-            </SecondaryButton>
-        </template>
-    </DialogModal>
+        </div>
+    </AppLayout>
 </template>
 
 <style scoped>

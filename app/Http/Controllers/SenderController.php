@@ -11,13 +11,11 @@ use App\Http\Requests\UpdateSenderRequest;
 use App\Models\Sender;
 use App\Services\WhatsappService;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
 
 class SenderController extends Controller
@@ -151,22 +149,24 @@ class SenderController extends Controller
      * Link sender device
      *
      * @param  Sender  $sender
-     * @return JsonResponse
+     * @return Response|RedirectResponse
      */
-    public function linkDevice(Sender $sender): JsonResponse
+    public function linkDevice(Sender $sender): Response|RedirectResponse
     {
         try {
             $response = $this->whatsappService->createSession($sender->phone);
 
-            if (! isset($response['data']['qrCodeDataUrl'])) {
-                return response()->json($response['message'], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            return response()->json([
-                'qr_code_data_url' => $response['data']['qrCodeDataUrl'],
+            return Inertia::render('Senders/LinkDevice', [
+                'sender'        => $sender,
+                'qrCodeDataUrl' => $response->json('data.qrCodeDataUrl'),
             ]);
         } catch (RequestException $e) {
-            return response()->json($e->getMessage(), SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.bannerStyle', 'danger');
         }
     }
 }
