@@ -19,8 +19,7 @@ class CreateSender
      */
     public function execute(User $user, array $data): Sender
     {
-        return DB::transaction(fn() => $user->senders()->create([
-            'name'  => $data['name'],
+        return DB::transaction(fn() => $user->sender()->create([
             'phone' => $data['phone'],
         ]));
     }

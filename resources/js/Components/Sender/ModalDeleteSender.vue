@@ -30,7 +30,7 @@ function deleteSender() {
         </template>
 
         <template #content>
-            Are you sure you would like to delete sender {{ sender.name }}?
+            Are you sure you would like to delete sender {{ sender.user.name }}?
         </template>
 
         <template #footer>

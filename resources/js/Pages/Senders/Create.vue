@@ -47,14 +47,6 @@ function onSubmit() {
 
                 <template #form>
                     <div class="col-span-6 sm:col-span-4">
-                        <InputLabel for="input-name" value="Name" />
-
-                        <TextInput v-model="formCreateSender.name" id="input-name" autofocus class="mt-1 block w-full" />
-
-                        <InputError :message="formCreateSender.errors.name" class="mt-2" />
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-4">
                         <InputLabel for="input-phone" value="Phone" />
 
                         <TextInput v-model="formCreateSender.phone" id="input-phone" class="mt-1 block w-full" type="tel" />

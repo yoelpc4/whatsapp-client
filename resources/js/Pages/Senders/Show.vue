@@ -34,11 +34,11 @@ defineProps({
                         <div class="flex items-center space-x-4">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">
-                                    Name
+                                    User
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ sender.name }}
+                                    {{ sender.user.name }}
                                 </p>
                             </div>
                         </div>

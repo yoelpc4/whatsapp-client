@@ -27,7 +27,6 @@ class SenderFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name'    => $this->faker->name,
             'phone'   => $this->faker->phoneNumber,
         ];
     }

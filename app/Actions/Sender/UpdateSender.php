@@ -19,7 +19,6 @@ class UpdateSender
     public function execute(Sender $sender, array $data): Sender
     {
         return DB::transaction(fn() => tap($sender)->update([
-            'name'  => $data['name'],
             'phone' => $data['phone'],
         ]));
     }

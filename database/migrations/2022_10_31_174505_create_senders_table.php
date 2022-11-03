@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('senders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('name');
             $table->string('phone')->unique();
             $table->timestamps();
-            $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

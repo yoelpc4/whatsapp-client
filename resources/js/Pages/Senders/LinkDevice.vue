@@ -41,11 +41,11 @@ setTimeout(() => {
                         <div class="flex items-center space-x-4">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">
-                                    Name
+                                    User
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ sender.name }}
+                                    {{ sender.user.name }}
                                 </p>
                             </div>
                         </div>
@@ -77,7 +77,7 @@ setTimeout(() => {
                                 </div>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    QR Code will refresh every 1 minute, You do not need to do anything after scanned the QR.
+                                    QR code will refresh every 1 minute, you can close this page after scanned the QR code.
                                 </p>
                             </div>
                         </div>

@@ -17,6 +17,6 @@ class DeleteSender
      */
     public function execute(Sender $sender): void
     {
-        DB::transaction(fn() => $sender->delete());
+        DB::transaction(fn() => $sender->forceDelete());
     }
 }

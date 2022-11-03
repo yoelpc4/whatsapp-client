@@ -22,8 +22,8 @@ defineEmits(['delete'])
                 <HeaderCell :cell="header('index')">
                     #
                 </HeaderCell>
-                <HeaderCell :cell="header('name')">
-                    Name
+                <HeaderCell :cell="header('user.name')">
+                    User
                 </HeaderCell>
                 <HeaderCell :cell="header('phone')">
                     Phone
@@ -42,8 +42,8 @@ defineEmits(['delete'])
                 <td>
                     {{ index + 1 }}
                 </td>
-                <td v-show="show('name')">
-                    {{ sender.name }}
+                <td v-show="show('user.name')">
+                    {{ sender.user.name }}
                 </td>
                 <td v-show="show('phone')">
                     {{ sender.phone }}

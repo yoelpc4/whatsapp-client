@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -46,12 +46,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * User has many senders
+     * User has one sender
      *
-     * @return HasMany
+     * @return HasOne
      */
-    public function senders(): HasMany
+    public function sender(): HasOne
     {
-        return $this->hasMany(Sender::class);
+        return $this->hasOne(Sender::class);
+    }
+
+    /**
+     * Determine whether user has sender
+     *
+     * @return bool
+     */
+    public function hasSender(): bool
+    {
+        return $this->sender()->exists();
     }
 }

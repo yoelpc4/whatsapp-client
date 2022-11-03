@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
+use App\Actions\Sender\LinkDevice;
 use App\Actions\Sender\UpdateSender;
 use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
 use App\Models\Sender;
-use App\Services\WhatsappService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,40 +21,31 @@ use Throwable;
 
 class SenderController extends Controller
 {
-    private WhatsappService $whatsappService;
-
-    /**
-     * Create a new sender controller
-     *
-     * @param  WhatsappService  $whatsappService
-     */
-    public function __construct(WhatsappService $whatsappService)
-    {
-        $this->whatsappService = $whatsappService;
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @param  Request  $request
      * @param  GetSenders  $getSenders
      * @return Response
+     * @throws AuthorizationException
      */
     public function index(Request $request, GetSenders $getSenders): Response
     {
-        $senders = $getSenders->execute($request->user(), $request->all());
+        $this->authorize('viewAny', Sender::class);
+
+        $senders = $getSenders->execute($request->all());
 
         return Inertia::render('Senders/Index', [
             'senders' => $senders,
         ])->table(function (InertiaTable $table) {
             $table->column(key: 'index', label: '#')
-                ->column(key: 'name', label: 'Name', sortable: true, searchable: true)
+                ->column(key: 'user.name', label: 'User', sortable: true, searchable: true)
                 ->column(key: 'phone', label: 'Phone', sortable: true, searchable: true)
                 ->column(key: 'created_at', label: 'Created at', sortable: true)
                 ->column(key: 'actions', label: 'Actions')
                 ->defaultSort('-created_at')
                 ->withGlobalSearch()
-                ->searchInput(key: 'name', label: 'Name')
+                ->searchInput(key: 'user.name', label: 'User')
                 ->searchInput(key: 'phone', label: 'Phone');
         });
     }
@@ -62,9 +54,12 @@ class SenderController extends Controller
      * Show the form for creating a new resource.
      *
      * @return Response
+     * @throws AuthorizationException
      */
     public function create(): Response
     {
+        $this->authorize('create', Sender::class);
+
         return Inertia::render('Senders/Create');
     }
 
@@ -78,6 +73,8 @@ class SenderController extends Controller
      */
     public function store(StoreSenderRequest $request, CreateSender $createSender): RedirectResponse
     {
+        $this->authorize('create', Sender::class);
+
         $createSender->execute($request->user(), $request->validated());
 
         return redirect()
@@ -91,9 +88,14 @@ class SenderController extends Controller
      *
      * @param  Sender  $sender
      * @return Response
+     * @throws AuthorizationException
      */
     public function show(Sender $sender): Response
     {
+        $this->authorize('view', $sender);
+
+        $sender->load('user:id,name');
+
         return Inertia::render('Senders/Show', compact('sender'));
     }
 
@@ -102,9 +104,14 @@ class SenderController extends Controller
      *
      * @param  Sender  $sender
      * @return Response
+     * @throws AuthorizationException
      */
     public function edit(Sender $sender): Response
     {
+        $this->authorize('update', $sender);
+
+        $sender->load('user:id,name');
+
         return Inertia::render('Senders/Edit', compact('sender'));
     }
 
@@ -119,6 +126,8 @@ class SenderController extends Controller
      */
     public function update(UpdateSenderRequest $request, Sender $sender, UpdateSender $updateSender): RedirectResponse
     {
+        $this->authorize('update', $sender);
+
         $updateSender->execute($sender, $request->validated());
 
         return redirect()
@@ -137,6 +146,8 @@ class SenderController extends Controller
      */
     public function destroy(Sender $sender, DeleteSender $deleteSender): RedirectResponse
     {
+        $this->authorize('delete', $sender);
+
         $deleteSender->execute($sender);
 
         return redirect()
@@ -149,17 +160,20 @@ class SenderController extends Controller
      * Link sender device
      *
      * @param  Sender  $sender
+     * @param  LinkDevice  $linkDevice
      * @return Response|RedirectResponse
+     * @throws AuthorizationException
      */
-    public function linkDevice(Sender $sender): Response|RedirectResponse
+    public function linkDevice(Sender $sender, LinkDevice $linkDevice): Response|RedirectResponse
     {
-        try {
-            $response = $this->whatsappService->createSession($sender->phone);
+        $this->authorize('update', $sender);
 
-            return Inertia::render('Senders/LinkDevice', [
-                'sender'        => $sender,
-                'qrCodeDataUrl' => $response->json('data.qrCodeDataUrl'),
-            ]);
+        try {
+            $qrCodeDataUrl = $linkDevice->execute($sender);
+
+            $sender->load('user:id,name');
+
+            return Inertia::render('Senders/LinkDevice', compact('sender', 'qrCodeDataUrl'));
         } catch (RequestException $e) {
             report($e);
 
