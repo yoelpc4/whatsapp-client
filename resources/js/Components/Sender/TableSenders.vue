@@ -16,7 +16,7 @@ defineEmits(['delete', 'edit', 'linkDevice', 'view'])
 </script>
 
 <template>
-    <div class="p-4 bg-white sm:p-6 shadow">
+    <div class="px-4 py-5 bg-white mb-10 sm:p-6 shadow">
         <Table :meta="senders">
             <template #head="{ header }">
                 <tr class="font-medium text-xs uppercase text-left tracking-wider text-gray-500 py-3 px-6">
@@ -71,11 +71,12 @@ defineEmits(['delete', 'edit', 'linkDevice', 'view'])
                                 <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
                                     <div class="px-2">
                                         <ul class="divide-y divide-gray-200">
-                                            <li class="py-2 flex items-center cursor-pointer"
-                                                @click.prevent="$emit('view', sender)">
-                                                <InformationCircleIcon class="w-5 h-5 mr-3"/>
-                                                View
-                                            </li>
+                                            <Link :href="route('senders.show', sender)" class="flex items-center">
+                                                <li class="py-2 flex items-center cursor-pointer">
+                                                    <InformationCircleIcon class="w-5 h-5 mr-3"/>
+                                                    View
+                                                </li>
+                                            </Link>
 
                                             <li class="py-2 flex items-center cursor-pointer"
                                                 @click.prevent="$emit('linkDevice', sender)">
@@ -83,8 +84,7 @@ defineEmits(['delete', 'edit', 'linkDevice', 'view'])
                                                 Link Device
                                             </li>
 
-                                            <Link :href="route('senders.edit', sender)"
-                                                  class="flex items-center">
+                                            <Link :href="route('senders.edit', sender)" class="flex items-center">
                                                 <li class="py-2 flex items-center cursor-pointer">
                                                     <PencilIcon class="w-5 h-5 mr-3"/>
                                                     Edit
@@ -92,7 +92,8 @@ defineEmits(['delete', 'edit', 'linkDevice', 'view'])
                                             </Link>
 
                                             <li class="py-2 flex items-center cursor-pointer"
-                                                @click.prevent="$emit('delete', sender)">
+                                                @click.prevent="$emit('delete', sender)"
+                                            >
                                                 <TrashIcon class="w-5 h-5 mr-3"/>
                                                 Delete
                                             </li>

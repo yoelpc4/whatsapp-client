@@ -8,7 +8,6 @@ use App\Actions\Sender\GetSenders;
 use App\Actions\Sender\UpdateSender;
 use App\Http\Requests\StoreSenderRequest;
 use App\Http\Requests\UpdateSenderRequest;
-use App\Http\Resources\SenderResource;
 use App\Models\Sender;
 use App\Services\WhatsappService;
 use Illuminate\Http\Client\RequestException;
@@ -93,11 +92,11 @@ class SenderController extends Controller
      * Display the specified resource.
      *
      * @param  Sender  $sender
-     * @return SenderResource
+     * @return Response
      */
-    public function show(Sender $sender): SenderResource
+    public function show(Sender $sender): Response
     {
-        return new SenderResource($sender);
+        return Inertia::render('Senders/Show', compact('sender'));
     }
 
     /**

@@ -5,7 +5,6 @@ import {PlusIcon} from '@heroicons/vue/24/outline'
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ModalDeleteSender from '@/Components/Sender/ModalDeleteSender.vue';
 import ModalLinkDevice from '@/Components/Sender/ModalLinkDevice.vue';
-import ModalViewSender from '@/Components/Sender/ModalViewSender.vue';
 import TableSenders from '@/Components/Sender/TableSenders.vue';
 
 defineProps({
@@ -19,25 +18,9 @@ const sender = ref(null)
 
 const qrCodeDataUrl = ref(null)
 
-const showModalViewSender = ref(false)
-
 const showModalLinkDevice = ref(false)
 
 const showModalDeleteSender = ref(false)
-
-async function onOpenModalViewSender(data) {
-    const response = await axios.get(route('senders.show', data))
-
-    sender.value = response.data
-
-    showModalViewSender.value = true
-}
-
-function onCloseModalViewSender() {
-    showModalViewSender.value = false
-
-    sender.value = null
-}
 
 async function onOpenModalLinkDevice(data) {
     const [showSenderResponse, createSessionResponse] = await Promise.all([
@@ -92,11 +75,8 @@ function onCloseModalDeleteSender() {
                 :senders="senders"
                 @linkDevice="onOpenModalLinkDevice"
                 @delete="onOpenModalDeleteSender"
-                @view="onOpenModalViewSender"
             />
         </div>
-
-        <ModalViewSender v-if="showModalViewSender && sender" :sender="sender" @close="onCloseModalViewSender"/>
 
         <ModalLinkDevice
             v-if="showModalLinkDevice && sender && qrCodeDataUrl"

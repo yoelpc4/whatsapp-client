@@ -1,26 +1,34 @@
 <script setup>
+import {Link} from '@inertiajs/inertia-vue3';
+import {ChevronLeftIcon} from '@heroicons/vue/24/outline'
 import {formatDate} from '@/helpers.js';
-import DialogModal from '@/Components/DialogModal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
     sender: {
         type: Object,
         required: true
-    },
+    }
 })
-
-defineEmits(['close'])
 </script>
 
 <template>
-    <DialogModal show @close="$emit('close')">
-        <template #title>
-            View Sender
+    <AppLayout title="Senders">
+        <template #header>
+            <div class="flex justify-between items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    View Sender
+                </h2>
+
+                <Link :href="route('senders.index')" class="flex justify-center items-center">
+                    <ChevronLeftIcon class="w-3 h-3 mr-2"/>
+                    Back
+                </Link>
+            </div>
         </template>
 
-        <template #content>
-            <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="px-4 py-5 bg-white sm:p-6 shadow">
                 <ul role="list" class="divide-y divide-gray-200">
                     <li class="py-3 sm:py-4">
                         <div class="flex items-center space-x-4">
@@ -79,14 +87,8 @@ defineEmits(['close'])
                     </li>
                 </ul>
             </div>
-        </template>
-
-        <template #footer>
-            <SecondaryButton @click="$emit('close')">
-                Close
-            </SecondaryButton>
-        </template>
-    </DialogModal>
+        </div>
+    </AppLayout>
 </template>
 
 <style scoped>
