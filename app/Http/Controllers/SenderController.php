@@ -151,12 +151,21 @@ class SenderController extends Controller
     {
         $this->authorize('delete', $sender);
 
-        $deleteSender->execute($sender);
+        try {
+            $deleteSender->execute($sender);
 
-        return redirect()
-            ->route('senders.index')
-            ->with('flash.banner', 'Sender successfully deleted')
-            ->with('flash.bannerStyle', 'success');
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Sender successfully deleted')
+                ->with('flash.bannerStyle', 'success');
+        } catch (RequestException $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.bannerStyle', 'danger');
+        }
     }
 
     /**

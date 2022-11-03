@@ -33,4 +33,16 @@ class WhatsappService
             'id' => $phone,
         ])->throw();
     }
+
+    /**
+     * Delete existing session
+     *
+     * @param  string  $phone
+     * @return Response
+     * @throws RequestException
+     */
+    public function deleteSession(string $phone): Response
+    {
+        return $this->http->delete("sessions/{$phone}")->throw();
+    }
 }
