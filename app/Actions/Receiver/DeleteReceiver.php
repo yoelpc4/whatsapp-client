@@ -17,6 +17,6 @@ class DeleteReceiver
      */
     public function execute(Receiver $receiver): void
     {
-        DB::transaction(fn() => $receiver->forceDelete());
+        DB::transaction(fn() => $receiver->delete());
     }
 }
