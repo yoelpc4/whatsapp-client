@@ -84,7 +84,6 @@ function onSubmit() {
                             id="input-type"
                             name="type"
                             :options="typeOptions"
-                            placeholder="Select a type"
                             class="mt-1 block w-full"
                         />
 

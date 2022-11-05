@@ -34,7 +34,7 @@ const typeOptions = computed(() => props.types.reduce((options, type) => {
 }, []))
 
 const formCreateReceiver = useForm({
-    type: null,
+    type: props.types[0],
     name: null,
     whatsapp_id: null,
 })
@@ -80,7 +80,6 @@ function onSubmit() {
                             id="input-type"
                             name="type"
                             :options="typeOptions"
-                            placeholder="Select a type"
                             class="mt-1 block w-full"
                         />
 

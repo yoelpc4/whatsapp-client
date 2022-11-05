@@ -10,10 +10,6 @@ defineProps({
         type: Array,
         default: []
     },
-    placeholder: {
-        type: String,
-        required: true
-    },
 });
 
 defineEmits(['update:modelValue']);
@@ -37,10 +33,6 @@ defineExpose({ focus: () => input.value.focus() });
         v-bind="$attrs"
         @change="$emit('update:modelValue', $event.target.value)"
     >
-        <option disabled value="" selected>
-            {{ placeholder }}
-        </option>
-
         <option v-for="option of options" :key="option.value" :value="option.value">
             {{ option.text }}
         </option>
