@@ -24,10 +24,6 @@ const links = [
         name: 'senders.index',
         text: 'Senders',
     },
-    {
-        name: 'receivers.index',
-        text: 'Receivers',
-    },
 ]
 
 const switchToTeam = (team) => {

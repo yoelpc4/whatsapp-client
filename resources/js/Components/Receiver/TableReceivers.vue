@@ -6,6 +6,10 @@ import {formatDate, titleCase} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
 defineProps({
+    sender: {
+        type: Object,
+        required: true
+    },
     receivers: {
         type: Object,
         required: true
@@ -76,14 +80,14 @@ defineEmits(['delete'])
                             <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
                                 <div class="px-2">
                                     <ul class="divide-y divide-gray-200">
-                                        <Link :href="route('receivers.show', receiver)" class="flex items-center">
+                                        <Link :href="route('senders.receivers.show', [sender, receiver])" class="flex items-center">
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <InformationCircleIcon class="w-5 h-5 mr-3"/>
                                                 View
                                             </li>
                                         </Link>
 
-                                        <Link :href="route('receivers.edit', receiver)" class="flex items-center">
+                                        <Link :href="route('senders.receivers.edit', [sender, receiver])" class="flex items-center">
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <PencilIcon class="w-5 h-5 mr-3"/>
                                                 Edit

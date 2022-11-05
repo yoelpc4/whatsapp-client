@@ -5,6 +5,10 @@ import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
+    sender: {
+        type: Object,
+        required: true
+    },
     receiver: {
         type: Object,
         required: true
@@ -16,7 +20,7 @@ const emit = defineEmits(['close'])
 const deleteReceiverForm = useForm()
 
 function deleteReceiver() {
-    deleteReceiverForm.delete(route('receivers.destroy', props.receiver), {
+    deleteReceiverForm.delete(route('senders.receivers.destroy', [props.sender, props.receiver]), {
         preserveScroll: false,
         onSuccess: () => emit('close')
     })

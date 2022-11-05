@@ -31,7 +31,7 @@ class SenderPolicy
      */
     public function view(User $user, Sender $sender): Response|bool
     {
-        return true;
+        return $user->id === $sender->user_id;
     }
 
     /**
@@ -42,7 +42,7 @@ class SenderPolicy
      */
     public function create(User $user): Response|bool
     {
-        return ! $user->hasSender();
+        return true;
     }
 
     /**

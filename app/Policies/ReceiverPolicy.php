@@ -31,7 +31,7 @@ class ReceiverPolicy
      */
     public function view(User $user, Receiver $receiver): Response|bool
     {
-        return true;
+        return $user->id === $receiver->sender->user_id;
     }
 
     /**
@@ -54,7 +54,7 @@ class ReceiverPolicy
      */
     public function update(User $user, Receiver $receiver): Response|bool
     {
-        return $user->id === $receiver->user_id;
+        return $user->id === $receiver->sender->user_id;
     }
 
     /**
@@ -66,7 +66,7 @@ class ReceiverPolicy
      */
     public function delete(User $user, Receiver $receiver): Response|bool
     {
-        return $user->id === $receiver->user_id;
+        return $user->id === $receiver->sender->user_id;
     }
 
     /**
@@ -78,7 +78,7 @@ class ReceiverPolicy
      */
     public function restore(User $user, Receiver $receiver): Response|bool
     {
-        return $user->id === $receiver->user_id;
+        return $user->id === $receiver->sender->user_id;
     }
 
     /**
@@ -90,6 +90,6 @@ class ReceiverPolicy
      */
     public function forceDelete(User $user, Receiver $receiver): Response|bool
     {
-        return $user->id === $receiver->user_id;
+        return $user->id === $receiver->sender->user_id;
     }
 }

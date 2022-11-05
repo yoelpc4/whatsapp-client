@@ -15,39 +15,32 @@ class GetSenders
     /**
      * Execute the action
      *
+     * @param  User  $user
      * @param  array  $data
      * @return LengthAwarePaginator
      */
-    public function execute(array $data): LengthAwarePaginator
+    public function execute(User $user, array $data): LengthAwarePaginator
     {
         $sender = new Sender;
 
-        $user = new User;
-
         return QueryBuilder::for($sender)
-            ->with('user:id,name')
             ->select([
                 $sender->qualifyColumn('id'),
-                $sender->qualifyColumn('user_id'),
+                $sender->qualifyColumn('name'),
                 $sender->qualifyColumn('phone'),
                 $sender->qualifyColumn('created_at'),
             ])
-            ->leftJoin(
-                $user->getTable(),
-                $sender->user()->getQualifiedParentKeyName(),
-                '=',
-                $sender->user()->getQualifiedForeignKeyName()
-            )
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('user_id'),
                 AllowedFilter::exact('user.id'),
                 'user.name',
+                'name',
                 'phone',
                 'created_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
-                        $query->whereHas('user', fn(Builder $query) => $query->where('name', 'LIKE', "%{$value}%"))
+                        $query->where('name', 'LIKE', "%{$value}%")
                             ->orWhere('phone', 'LIKE', "%{$value}%");
                     });
                 }),
@@ -55,10 +48,12 @@ class GetSenders
             ->allowedSorts([
                 'id',
                 AllowedSort::field('user.name', $user->qualifyColumn('name')),
+                'name',
                 'phone',
                 'created_at',
             ])
             ->defaultSort('-created_at')
+            ->where($sender->qualifyColumn('user_id'), $user->id)
             ->paginate($data['perPage'] ?? 15)
             ->withQueryString();
     }

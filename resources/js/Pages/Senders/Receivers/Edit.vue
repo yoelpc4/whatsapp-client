@@ -11,9 +11,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import WhatsappInternationalPhoneNumberFormatLink
-    from '@/Components/Receiver/WhatsappInternationalPhoneNumberFormatLink.vue';
+    from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
 
 const props = defineProps({
+    sender: {
+        type: Object,
+        required: true
+    },
     receiver: {
         type: Object,
         required: true
@@ -40,7 +44,7 @@ const formEditReceiver = useForm({
 })
 
 function onSubmit() {
-    formEditReceiver.put(route('receivers.update', props.receiver), {
+    formEditReceiver.put(route('senders.receivers.update', [props.sender, props.receiver]), {
         preserveScroll: false
     })
 }
@@ -54,7 +58,7 @@ function onSubmit() {
                     Edit Receiver
                 </h2>
 
-                <Link :href="route('receivers.index')" class="flex justify-center items-center">
+                <Link :href="route('senders.show', sender)" class="flex justify-center items-center">
                     <ChevronLeftIcon class="w-3 h-3 mr-2"/>
                     Back
                 </Link>
@@ -68,7 +72,7 @@ function onSubmit() {
                 </template>
 
                 <template #description>
-                    Edit existing whatsapp receiver.
+                    Edit existing whatsapp receiver of sender {{ sender.name }}.
                 </template>
 
                 <template #form>
@@ -78,6 +82,7 @@ function onSubmit() {
                         <SelectInput
                             v-model="formEditReceiver.type"
                             id="input-type"
+                            name="type"
                             :options="typeOptions"
                             placeholder="Select a type"
                             class="mt-1 block w-full"
@@ -92,6 +97,7 @@ function onSubmit() {
                         <TextInput
                             v-model="formEditReceiver.name"
                             id="input-name"
+                            name="name"
                             maxlength="255"
                             class="mt-1 block w-full"
                         />
@@ -105,11 +111,12 @@ function onSubmit() {
                         <TextInput
                             v-model="formEditReceiver.whatsapp_id"
                             id="input-whatsapp-id"
+                            name="whatsapp_id"
                             class="mt-1 block w-full"
                             maxlength="255"
                         >
                             <template #help>
-                                When you select type person, enter the receiver phone number according to the
+                                When you select type person, please enter the receiver phone number according to the
                                 <WhatsappInternationalPhoneNumberFormatLink/>.
                             </template>
                         </TextInput>

@@ -13,7 +13,7 @@ defineProps({
     placeholder: {
         type: String,
         required: true
-    }
+    },
 });
 
 defineEmits(['update:modelValue']);
@@ -46,7 +46,7 @@ defineExpose({ focus: () => input.value.focus() });
         </option>
     </select>
 
-    <span class="text-xs text-gray-600" v-if="$slots.help">
+    <div v-if="$slots.help" class="mt-2 text-xs text-gray-600">
         <slot name="help"></slot>
-    </span>
+    </div>
 </template>

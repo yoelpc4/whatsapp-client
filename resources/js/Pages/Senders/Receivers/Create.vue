@@ -11,9 +11,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import WhatsappInternationalPhoneNumberFormatLink
-    from '@/Components/Receiver/WhatsappInternationalPhoneNumberFormatLink.vue';
+    from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
 
 const props = defineProps({
+    sender: {
+      type: Object,
+      required: true
+    },
     types: {
         type: Array,
         required: true
@@ -36,7 +40,7 @@ const formCreateReceiver = useForm({
 })
 
 function onSubmit() {
-    formCreateReceiver.post(route('receivers.store'), {
+    formCreateReceiver.post(route('senders.receivers.store', props.sender), {
         preserveScroll: false
     })
 }
@@ -50,7 +54,7 @@ function onSubmit() {
                     Create Receiver
                 </h2>
 
-                <Link :href="route('receivers.index')" class="flex justify-center items-center">
+                <Link :href="route('senders.show', sender)" class="flex justify-center items-center">
                     <ChevronLeftIcon class="w-3 h-3 mr-2"/>
                     Back
                 </Link>
@@ -64,7 +68,7 @@ function onSubmit() {
                 </template>
 
                 <template #description>
-                    Create new whatsapp receiver.
+                    Create a new whatsapp receiver for sender {{ sender.name }}.
                 </template>
 
                 <template #form>
@@ -74,6 +78,7 @@ function onSubmit() {
                         <SelectInput
                             v-model="formCreateReceiver.type"
                             id="input-type"
+                            name="type"
                             :options="typeOptions"
                             placeholder="Select a type"
                             class="mt-1 block w-full"
@@ -88,6 +93,7 @@ function onSubmit() {
                         <TextInput
                             v-model="formCreateReceiver.name"
                             id="input-name"
+                            name="name"
                             maxlength="255"
                             class="mt-1 block w-full"
                         />
@@ -101,11 +107,12 @@ function onSubmit() {
                         <TextInput
                             v-model="formCreateReceiver.whatsapp_id"
                             id="input-whatsapp-id"
-                            class="mt-1 block w-full"
+                            name="whatsapp_id"
                             maxlength="255"
+                            class="mt-1 block w-full"
                         >
                             <template #help>
-                                When you select type person, enter the receiver phone number according to the
+                                When you select type person, please enter the receiver phone number according to the
                                 <WhatsappInternationalPhoneNumberFormatLink/>.
                             </template>
                         </TextInput>

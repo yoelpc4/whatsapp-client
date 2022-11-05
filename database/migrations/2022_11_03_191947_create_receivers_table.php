@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('receivers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('sender_id');
             $table->enum('type', ['person', 'group']);
             $table->string('name');
             $table->string('whatsapp_id');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('sender_id')->references('id')->on('senders');
         });
     }
 

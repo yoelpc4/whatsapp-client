@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Receiver\GetReceivers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
 use App\Actions\Sender\LinkDevice;
-use App\Actions\Sender\UpdateSender;
 use App\Http\Requests\StoreSenderRequest;
-use App\Http\Requests\UpdateSenderRequest;
 use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\RequestException;
@@ -33,24 +32,20 @@ class SenderController extends Controller
     {
         $this->authorize('viewAny', Sender::class);
 
-        $senders = $getSenders->execute($request->all());
+        $senders = $getSenders->execute($request->user(), $request->all());
 
-        return Inertia::render('Senders/Index', [
-            'senders' => $senders,
-            'can'     => [
-                'create_sender' => $request->user()->can('create', Sender::class),
-            ],
-        ])->table(function (InertiaTable $table) {
-            $table->column(key: 'index', label: '#')
-                ->column(key: 'user.name', label: 'User', sortable: true, searchable: true)
-                ->column(key: 'phone', label: 'Phone', sortable: true, searchable: true)
-                ->column(key: 'created_at', label: 'Created at', sortable: true)
-                ->column(key: 'actions', label: 'Actions')
-                ->defaultSort('-created_at')
-                ->withGlobalSearch()
-                ->searchInput(key: 'user.name', label: 'User')
-                ->searchInput(key: 'phone', label: 'Phone');
-        });
+        return Inertia::render('Senders/Index', compact('senders'))
+            ->table(function (InertiaTable $table) {
+                $table->column(key: 'index', label: '#')
+                    ->column(key: 'name', label: 'Name', sortable: true, searchable: true)
+                    ->column(key: 'phone', label: 'Phone', sortable: true, searchable: true)
+                    ->column(key: 'created_at', label: 'Created at', sortable: true)
+                    ->column(key: 'actions', label: 'Actions')
+                    ->defaultSort('-created_at')
+                    ->withGlobalSearch()
+                    ->searchInput(key: 'name', label: 'Name')
+                    ->searchInput(key: 'phone', label: 'Phone');
+            });
     }
 
     /**
@@ -89,54 +84,32 @@ class SenderController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  Request  $request
      * @param  Sender  $sender
+     * @param  GetReceivers  $getReceivers
      * @return Response
      * @throws AuthorizationException
      */
-    public function show(Sender $sender): Response
+    public function show(Request $request, Sender $sender, GetReceivers $getReceivers): Response
     {
         $this->authorize('view', $sender);
 
-        $sender->load('user:id,name');
+        $receivers = $getReceivers->execute($sender, $request->all());
 
-        return Inertia::render('Senders/Show', compact('sender'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  Sender  $sender
-     * @return Response
-     * @throws AuthorizationException
-     */
-    public function edit(Sender $sender): Response
-    {
-        $this->authorize('update', $sender);
-
-        $sender->load('user:id,name');
-
-        return Inertia::render('Senders/Edit', compact('sender'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  UpdateSenderRequest  $request
-     * @param  Sender  $sender
-     * @param  UpdateSender  $updateSender
-     * @return RedirectResponse
-     * @throws Throwable
-     */
-    public function update(UpdateSenderRequest $request, Sender $sender, UpdateSender $updateSender): RedirectResponse
-    {
-        $this->authorize('update', $sender);
-
-        $updateSender->execute($sender, $request->validated());
-
-        return redirect()
-            ->route('senders.index')
-            ->with('flash.banner', 'Sender successfully updated')
-            ->with('flash.bannerStyle', 'success');
+        return Inertia::render('Senders/Show', compact('sender', 'receivers'))
+            ->table(function (InertiaTable $table) {
+                $table->column(key: 'index', label: '#')
+                    ->column(key: 'type', label: 'Type', sortable: true, searchable: true)
+                    ->column(key: 'name', label: 'Name', sortable: true, searchable: true)
+                    ->column(key: 'whatsapp_id', label: 'Whatsapp ID', sortable: true, searchable: true)
+                    ->column(key: 'created_at', label: 'Created at', sortable: true)
+                    ->column(key: 'actions', label: 'Actions')
+                    ->defaultSort('-created_at')
+                    ->withGlobalSearch()
+                    ->searchInput(key: 'type', label: 'Type')
+                    ->searchInput(key: 'name', label: 'Name')
+                    ->searchInput(key: 'whatsapp_id', label: 'Whatsapp ID');
+            });
     }
 
     /**

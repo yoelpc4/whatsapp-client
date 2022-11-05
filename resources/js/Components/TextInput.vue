@@ -35,7 +35,7 @@ defineExpose({ focus: () => input.value.focus() });
         @input="$emit('update:modelValue', $event.target.value)"
     />
 
-    <span class="text-xs text-gray-600" v-if="$slots.help">
+    <div v-if="$slots.help" class="mt-2 text-xs text-gray-600">
         <slot name="help"></slot>
-    </span>
+    </div>
 </template>

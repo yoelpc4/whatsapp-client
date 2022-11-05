@@ -11,10 +11,6 @@ defineProps({
         type: Object,
         required: true
     },
-    can: {
-        type: Object,
-        required: true
-    },
 })
 
 const sender = ref(null)
@@ -42,14 +38,10 @@ function onCloseModalDeleteSender() {
                     Senders
                 </h2>
 
-                <Link v-if="can.create_sender" :href="route('senders.create')" class="flex justify-center items-center">
+                <Link :href="route('senders.create')" class="flex justify-center items-center">
                     <PlusIcon class="w-3 h-3 mr-2"/>
                     Create
                 </Link>
-
-                <small v-else>
-                    Only allowed 1 sender per user
-                </small>
             </div>
         </template>
 

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -36,7 +35,7 @@ class User extends Authenticatable
      * @inheritdoc
      */
     protected $dates = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at',
     ];
 
     /**
@@ -47,32 +46,12 @@ class User extends Authenticatable
     ];
 
     /**
-     * User has one sender
-     *
-     * @return HasOne
-     */
-    public function sender(): HasOne
-    {
-        return $this->hasOne(Sender::class);
-    }
-
-    /**
-     * User has many receivers
+     * User has many senders
      *
      * @return HasMany
      */
-    public function receivers(): HasMany
+    public function senders(): HasMany
     {
-        return $this->hasMany(Receiver::class);
-    }
-
-    /**
-     * Determine whether user has sender
-     *
-     * @return bool
-     */
-    public function hasSender(): bool
-    {
-        return $this->sender()->exists();
+        return $this->hasMany(Sender::class);
     }
 }

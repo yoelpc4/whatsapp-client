@@ -25,10 +25,13 @@ Route::middleware([
 ])->group(function () {
     Route::get('dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
-    Route::resource('receivers', ReceiverController::class);
+    Route::resource('senders.receivers', ReceiverController::class)->except('index');
 
     Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
         Route::get('{sender}/link-device', [SenderController::class, 'linkDevice'])->name('link_device');
     });
-    Route::resource('senders', SenderController::class);
+    Route::resource('senders', SenderController::class)->except([
+        'edit',
+        'update',
+    ]);
 });

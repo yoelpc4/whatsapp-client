@@ -28,12 +28,12 @@ class Receiver extends Model
     }
 
     /**
-     * Receiver belongs to user
+     * Receiver belongs to sender
      *
      * @return BelongsTo
      */
-    public function user(): BelongsTo
+    public function sender(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Sender::class);
     }
 }

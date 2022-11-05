@@ -1,7 +1,7 @@
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-import {InformationCircleIcon, PencilIcon, QrCodeIcon, TrashIcon} from '@heroicons/vue/24/outline'
+import {InformationCircleIcon, QrCodeIcon, TrashIcon} from '@heroicons/vue/24/outline'
 import {formatDate} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
@@ -22,8 +22,8 @@ defineEmits(['delete'])
                 <HeaderCell :cell="header('index')">
                     #
                 </HeaderCell>
-                <HeaderCell :cell="header('user.name')">
-                    User
+                <HeaderCell :cell="header('name')">
+                    Name
                 </HeaderCell>
                 <HeaderCell :cell="header('phone')">
                     Phone
@@ -42,8 +42,8 @@ defineEmits(['delete'])
                 <td>
                     {{ index + 1 }}
                 </td>
-                <td v-show="show('user.name')">
-                    {{ sender.user.name }}
+                <td v-show="show('name')">
+                    {{ sender.name }}
                 </td>
                 <td v-show="show('phone')">
                     {{ sender.phone }}
@@ -81,13 +81,6 @@ defineEmits(['delete'])
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <QrCodeIcon class="w-5 h-5 mr-3"/>
                                                 Link Device
-                                            </li>
-                                        </Link>
-
-                                        <Link :href="route('senders.edit', sender)" class="flex items-center">
-                                            <li class="py-2 flex items-center cursor-pointer">
-                                                <PencilIcon class="w-5 h-5 mr-3"/>
-                                                Edit
                                             </li>
                                         </Link>
 
