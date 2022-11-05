@@ -67,18 +67,28 @@ class SenderController extends Controller
      * @param  StoreSenderRequest  $request
      * @param  CreateSender  $createSender
      * @return RedirectResponse
-     * @throws Throwable
+     * @throws AuthorizationException
      */
     public function store(StoreSenderRequest $request, CreateSender $createSender): RedirectResponse
     {
         $this->authorize('create', Sender::class);
 
-        $createSender->execute($request->user(), $request->validated());
+        try {
+            $createSender->execute($request->user(), $request->validated());
 
-        return redirect()
-            ->route('senders.index')
-            ->with('flash.banner', 'Sender successfully created')
-            ->with('flash.bannerStyle', 'success');
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Sender successfully created')
+                ->with('flash.bannerStyle', 'success');
+
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Failed to create sender')
+                ->with('flash.bannerStyle', 'danger');
+        }
     }
 
     /**
@@ -118,7 +128,7 @@ class SenderController extends Controller
      * @param  Sender  $sender
      * @param  DeleteSender  $deleteSender
      * @return RedirectResponse
-     * @throws Throwable
+     * @throws AuthorizationException
      */
     public function destroy(Sender $sender, DeleteSender $deleteSender): RedirectResponse
     {
@@ -137,6 +147,13 @@ class SenderController extends Controller
             return redirect()
                 ->route('senders.index')
                 ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.bannerStyle', 'danger');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Failed to delete sender')
                 ->with('flash.bannerStyle', 'danger');
         }
     }

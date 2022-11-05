@@ -43,7 +43,6 @@ class ReceiverController extends Controller
      * @param  CreateReceiver  $createReceiver
      * @return RedirectResponse
      * @throws AuthorizationException
-     * @throws Throwable
      */
     public function store(
         StoreReceiverRequest $request,
@@ -52,12 +51,22 @@ class ReceiverController extends Controller
     ): RedirectResponse {
         $this->authorize('create', [Receiver::class, $sender]);
 
-        $createReceiver->execute($sender, $request->validated());
+        try {
+            $createReceiver->execute($sender, $request->validated());
 
-        return redirect()
-            ->route('senders.show', $sender)
-            ->with('flash.banner', 'Receiver successfully created')
-            ->with('flash.bannerStyle', 'success');
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Receiver successfully created')
+                ->with('flash.bannerStyle', 'success');
+
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Failed to create receiver')
+                ->with('flash.bannerStyle', 'danger');
+        }
     }
 
     /**
@@ -103,7 +112,6 @@ class ReceiverController extends Controller
      * @param  UpdateReceiver  $updateReceiver
      * @return RedirectResponse
      * @throws AuthorizationException
-     * @throws Throwable
      */
     public function update(
         UpdateReceiverRequest $request,
@@ -113,12 +121,21 @@ class ReceiverController extends Controller
     ): RedirectResponse {
         $this->authorize('update', [$receiver, $sender]);
 
-        $updateReceiver->execute($receiver, $request->validated());
+        try {
+            $updateReceiver->execute($receiver, $request->validated());
 
-        return redirect()
-            ->route('senders.show', $sender)
-            ->with('flash.banner', 'Receiver successfully updated')
-            ->with('flash.bannerStyle', 'success');
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Receiver successfully updated')
+                ->with('flash.bannerStyle', 'success');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Failed to update receiver')
+                ->with('flash.bannerStyle', 'danger');
+        }
     }
 
     /**
@@ -129,7 +146,6 @@ class ReceiverController extends Controller
      * @param  DeleteReceiver  $deleteReceiver
      * @return RedirectResponse
      * @throws AuthorizationException
-     * @throws Throwable
      */
     public function destroy(Sender $sender, Receiver $receiver, DeleteReceiver $deleteReceiver): RedirectResponse
     {
@@ -148,6 +164,13 @@ class ReceiverController extends Controller
             return redirect()
                 ->route('senders.show', $sender)
                 ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.bannerStyle', 'danger');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Failed to delete receiver')
                 ->with('flash.bannerStyle', 'danger');
         }
     }
