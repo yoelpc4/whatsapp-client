@@ -28,13 +28,10 @@ class UpdateReceiverRequest extends FormRequest
         return [
             'type'        => [
                 'required',
-                Rule::in([
-                    Receiver::TYPE_PERSON,
-                    Receiver::TYPE_GROUP,
-                ]),
+                Rule::in(Receiver::getTypes()),
             ],
-            'name'        => 'required|string',
-            'whatsapp_id' => 'required|string',
+            'name'        => 'required|string|max:255',
+            'whatsapp_id' => 'required|string|max:255',
         ];
     }
 }

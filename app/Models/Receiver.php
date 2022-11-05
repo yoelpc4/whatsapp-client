@@ -15,6 +15,19 @@ class Receiver extends Model
     use HasFactory;
 
     /**
+     * Get receiver's types
+     *
+     * @return array<string, string>
+     */
+    public static function getTypes(): array
+    {
+        return [
+            static::TYPE_PERSON,
+            static::TYPE_GROUP,
+        ];
+    }
+
+    /**
      * Receiver belongs to user
      *
      * @return BelongsTo

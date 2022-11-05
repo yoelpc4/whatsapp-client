@@ -6,9 +6,13 @@ defineProps({
         type: [String, Number],
         default: null
     },
-    type: {
+    options: {
+        type: Array,
+        default: []
+    },
+    placeholder: {
         type: String,
-        default: 'text',
+        required: true
     }
 });
 
@@ -26,14 +30,21 @@ defineExpose({ focus: () => input.value.focus() });
 </script>
 
 <template>
-    <input
+    <select
         ref="input"
         class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-        :type="type"
         :value="modelValue"
         v-bind="$attrs"
-        @input="$emit('update:modelValue', $event.target.value)"
-    />
+        @change="$emit('update:modelValue', $event.target.value)"
+    >
+        <option disabled value="" selected>
+            {{ placeholder }}
+        </option>
+
+        <option v-for="option of options" :key="option.value" :value="option.value">
+            {{ option.text }}
+        </option>
+    </select>
 
     <span class="text-xs text-gray-600" v-if="$slots.help">
         <slot name="help"></slot>

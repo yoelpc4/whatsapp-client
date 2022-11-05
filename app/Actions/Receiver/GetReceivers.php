@@ -15,14 +15,13 @@ class GetReceivers
     /**
      * Execute the action
      *
+     * @param  User  $user
      * @param  array  $data
      * @return LengthAwarePaginator
      */
-    public function execute(array $data): LengthAwarePaginator
+    public function execute(User $user, array $data): LengthAwarePaginator
     {
         $receiver = new Receiver;
-
-        $user = new User;
 
         return QueryBuilder::for($receiver)
             ->with('user:id,name')
@@ -67,6 +66,7 @@ class GetReceivers
                 'created_at',
             ])
             ->defaultSort('-created_at')
+            ->where($receiver->qualifyColumn('user_id'), $user->id)
             ->paginate($data['perPage'] ?? 15)
             ->withQueryString();
     }
