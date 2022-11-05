@@ -27,7 +27,7 @@ class ReceiverController extends Controller
      */
     public function create(Sender $sender): Response
     {
-        $this->authorize('view', $sender);
+        $this->authorize('create', [Receiver::class, $sender]);
 
         return Inertia::render('Senders/Receivers/Create', [
             'sender' => $sender,
@@ -50,7 +50,7 @@ class ReceiverController extends Controller
         Sender $sender,
         CreateReceiver $createReceiver
     ): RedirectResponse {
-        $this->authorize('view', $sender);
+        $this->authorize('create', [Receiver::class, $sender]);
 
         $createReceiver->execute($sender, $request->validated());
 
@@ -70,7 +70,7 @@ class ReceiverController extends Controller
      */
     public function show(Sender $sender, Receiver $receiver): Response
     {
-        $this->authorize('view', $receiver);
+        $this->authorize('view', [$receiver, $sender]);
 
         return Inertia::render('Senders/Receivers/Show', compact('sender', 'receiver'));
     }
@@ -85,7 +85,7 @@ class ReceiverController extends Controller
      */
     public function edit(Sender $sender, Receiver $receiver): Response
     {
-        $this->authorize('update', $receiver);
+        $this->authorize('update', [$receiver, $sender]);
 
         return Inertia::render('Senders/Receivers/Edit', [
             'sender'   => $sender,
@@ -111,7 +111,7 @@ class ReceiverController extends Controller
         Receiver $receiver,
         UpdateReceiver $updateReceiver
     ): RedirectResponse {
-        $this->authorize('update', $receiver);
+        $this->authorize('update', [$receiver, $sender]);
 
         $updateReceiver->execute($receiver, $request->validated());
 
@@ -133,7 +133,7 @@ class ReceiverController extends Controller
      */
     public function destroy(Sender $sender, Receiver $receiver, DeleteReceiver $deleteReceiver): RedirectResponse
     {
-        $this->authorize('delete', $receiver);
+        $this->authorize('delete', [$receiver, $sender]);
 
         try {
             $deleteReceiver->execute($receiver);
