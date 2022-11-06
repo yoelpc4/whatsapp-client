@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Receiver\GetGroups;
 use App\Actions\Receiver\GetReceivers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
@@ -12,13 +11,11 @@ use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
 
 class SenderController extends Controller
@@ -165,34 +162,6 @@ class SenderController extends Controller
                 ->route('senders.index')
                 ->with('flash.banner', 'Failed to delete sender')
                 ->with('flash.bannerStyle', 'danger');
-        }
-    }
-
-    /**
-     * Get sender's groups
-     *
-     * @param  Sender  $sender
-     * @param  GetGroups  $getGroups
-     * @return JsonResponse
-     */
-    public function getGroups(Sender $sender, GetGroups $getGroups): JsonResponse
-    {
-        try {
-            $groups = $getGroups->execute($sender);
-
-            return response()->json($groups);
-        } catch (ConnectionException $e) {
-            report($e);
-
-            return response()->json([
-                'message' => 'Unable to connect to the whatsapp service',
-            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (RequestException $e) {
-            report($e);
-
-            return response()->json([
-                'message' => $e->response->json('message'),
-            ], $e->response->status());
         }
     }
 }
