@@ -77,7 +77,7 @@ defineEmits(['delete'])
                                             </li>
                                         </Link>
 
-                                        <Link :href="route('senders.link_device', sender)" class="flex items-center">
+                                        <Link :href="route('senders.link-device', sender)" class="flex items-center">
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <QrCodeIcon class="w-5 h-5 mr-3"/>
                                                 Link Device

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Receiver;
 use App\Models\Sender;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
@@ -65,6 +66,52 @@ class WhatsappService
                 'session' => $sender->phone,
             ])
             ->get('groups')
+            ->throw();
+    }
+
+    /**
+     * Send message to person
+     *
+     * @param  Sender  $sender
+     * @param  Receiver  $receiver
+     * @param  string  $message
+     * @return Response
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function sendMessageToPerson(Sender $sender, Receiver $receiver, string $message): Response
+    {
+        return $this->http
+            ->withHeaders([
+                'session' => $sender->phone,
+            ])
+            ->post('persons/send-message', [
+                'whatsappId' => $receiver->whatsapp_id,
+                'message'    => $message,
+            ])
+            ->throw();
+    }
+
+    /**
+     * Send message to group
+     *
+     * @param  Sender  $sender
+     * @param  Receiver  $receiver
+     * @param  string  $message
+     * @return Response
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function sendMessageToGroup(Sender $sender, Receiver $receiver, string $message): Response
+    {
+        return $this->http
+            ->withHeaders([
+                'session' => $sender->phone,
+            ])
+            ->post('groups/send-message', [
+                'whatsappId' => $receiver->whatsapp_id,
+                'message'    => $message,
+            ])
             ->throw();
     }
 }

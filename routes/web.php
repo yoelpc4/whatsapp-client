@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ReceiverController;
 use App\Http\Controllers\SenderController;
+use App\Http\Controllers\SendMessageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,13 +26,26 @@ Route::middleware([
 ])->group(function () {
     Route::get('dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
+    Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
+        Route::group(['prefix' => '{sender}'], function () {
+            Route::get('link-device', [SenderController::class, 'linkDevice'])->name('link-device');
+
+            Route::get('groups', [SenderController::class, 'getGroups'])->name('groups');
+
+            Route::group(['prefix' => 'receivers', 'as' => 'receivers.'], function () {
+                Route::group(['prefix' => '{receiver}'], function () {
+                    Route::group(['prefix' => 'send-message', 'as' => 'send-message.'], function () {
+                        Route::get('/', [SendMessageController::class, 'index'])->name('index');
+
+                        Route::post('/', [SendMessageController::class, 'store'])->name('store');
+                    });
+                });
+            });
+        });
+    });
+
     Route::resource('senders.receivers', ReceiverController::class)->except('index');
 
-    Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
-        Route::get('{sender}/link-device', [SenderController::class, 'linkDevice'])->name('link_device');
-
-        Route::get('{sender}/groups', [SenderController::class, 'getGroups'])->name('groups');
-    });
     Route::resource('senders', SenderController::class)->except([
         'edit',
         'update',

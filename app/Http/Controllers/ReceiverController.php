@@ -97,9 +97,9 @@ class ReceiverController extends Controller
         $this->authorize('update', [$receiver, $sender]);
 
         return Inertia::render('Senders/Receivers/Edit', [
-            'sender'   => $sender,
+            'sender' => $sender,
             'receiver' => $receiver,
-            'types'    => Receiver::getTypes(),
+            'types' => Receiver::getTypes(),
         ]);
     }
 

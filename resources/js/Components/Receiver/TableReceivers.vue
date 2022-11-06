@@ -1,7 +1,7 @@
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-import {InformationCircleIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/outline'
+import {ChatBubbleBottomCenterTextIcon, InformationCircleIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/outline'
 import {formatDate, titleCase} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
@@ -62,7 +62,7 @@ defineEmits(['delete'])
                     {{ formatDate(receiver.created_at) }}
                 </td>
                 <td>
-                    <Dropdown align="left" width="24">
+                    <Dropdown align="left" width="32">
                         <template #trigger>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -80,21 +80,38 @@ defineEmits(['delete'])
                             <div role="menu" aria-orientation="vertical" aria-labelledby="sort-menu">
                                 <div class="px-2">
                                     <ul class="divide-y divide-gray-200">
-                                        <Link :href="route('senders.receivers.show', [sender, receiver])" class="flex items-center">
+                                        <Link
+                                            :href="route('senders.receivers.show', [sender, receiver])"
+                                            class="flex items-center"
+                                        >
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <InformationCircleIcon class="w-5 h-5 mr-3"/>
                                                 View
                                             </li>
                                         </Link>
 
-                                        <Link :href="route('senders.receivers.edit', [sender, receiver])" class="flex items-center">
+                                        <Link
+                                            :href="route('senders.receivers.send-message.index', [sender, receiver])"
+                                            class="flex items-center"
+                                        >
+                                            <li class="py-2 flex items-center cursor-pointer">
+                                                <ChatBubbleBottomCenterTextIcon class="w-5 h-5 mr-3"/>
+                                                Send Message
+                                            </li>
+                                        </Link>
+
+                                        <Link
+                                            :href="route('senders.receivers.edit', [sender, receiver])"
+                                            class="flex items-center"
+                                        >
                                             <li class="py-2 flex items-center cursor-pointer">
                                                 <PencilIcon class="w-5 h-5 mr-3"/>
                                                 Edit
                                             </li>
                                         </Link>
 
-                                        <li class="py-2 flex items-center cursor-pointer"
+                                        <li
+                                            class="py-2 flex items-center cursor-pointer"
                                             @click.prevent="$emit('delete', receiver)"
                                         >
                                             <TrashIcon class="w-5 h-5 mr-3"/>

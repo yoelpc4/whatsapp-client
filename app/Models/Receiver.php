@@ -39,4 +39,24 @@ class Receiver extends Model
     {
         return $this->belongsTo(Sender::class);
     }
+
+    /**
+     * Determine whether receiver is a person
+     *
+     * @return bool
+     */
+    public function isPerson(): bool
+    {
+        return $this->type === static::TYPE_PERSON;
+    }
+
+    /**
+     * Determine whether receiver is a group
+     *
+     * @return bool
+     */
+    public function isGroup(): bool
+    {
+        return $this->type === static::TYPE_GROUP;
+    }
 }
