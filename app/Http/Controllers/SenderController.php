@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Receiver\GetGroups;
 use App\Actions\Receiver\GetReceivers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
@@ -10,12 +11,15 @@ use App\Actions\Sender\LinkDevice;
 use App\Http\Requests\StoreSenderRequest;
 use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use \Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
 
 class SenderController extends Controller
@@ -141,6 +145,13 @@ class SenderController extends Controller
                 ->route('senders.index')
                 ->with('flash.banner', 'Sender successfully deleted')
                 ->with('flash.bannerStyle', 'success');
+        } catch (ConnectionException $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Unable to connect to the whatsapp service')
+                ->with('flash.bannerStyle', 'danger');
         } catch (RequestException $e) {
             report($e);
 
@@ -176,6 +187,13 @@ class SenderController extends Controller
             $sender->load('user:id,name');
 
             return Inertia::render('Senders/LinkDevice', compact('sender', 'qrCodeDataUrl'));
+        } catch (ConnectionException $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.index')
+                ->with('flash.banner', 'Unable to connect to the whatsapp service')
+                ->with('flash.bannerStyle', 'danger');
         } catch (RequestException $e) {
             report($e);
 
@@ -183,6 +201,34 @@ class SenderController extends Controller
                 ->route('senders.index')
                 ->with('flash.banner', $e->response->json('message'))
                 ->with('flash.bannerStyle', 'danger');
+        }
+    }
+
+    /**
+     * Get sender's groups
+     *
+     * @param  Sender  $sender
+     * @param  GetGroups  $getGroups
+     * @return JsonResponse
+     */
+    public function getGroups(Sender $sender, GetGroups $getGroups): JsonResponse
+    {
+        try {
+            $groups = $getGroups->execute($sender);
+
+            return response()->json($groups);
+        } catch (ConnectionException $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Unable to connect to the whatsapp service',
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (RequestException $e) {
+            report($e);
+
+            return response()->json([
+                'message' => $e->response->json('message'),
+            ], $e->response->status());
         }
     }
 }

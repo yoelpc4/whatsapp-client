@@ -1,20 +1,44 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 
-defineProps({
+const props = defineProps({
     modelValue: {
-        type: [String, Number],
+        type: [String, Number, Object],
         default: null
     },
     options: {
         type: Array,
         default: []
     },
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    textKey: {
+        type: String,
+        default: 'text'
+    },
+    valueKey: {
+        type: String,
+        default: 'value'
+    },
+    returnObject: {
+        type: Boolean,
+        default: false
+    },
 });
 
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 const input = ref(null);
+
+const selectValue = computed(() => {
+    if (props.returnObject) {
+        return props.modelValue ? props.modelValue[props.valueKey] : null
+    }
+
+    return props.modelValue
+})
 
 onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
@@ -23,18 +47,34 @@ onMounted(() => {
 });
 
 defineExpose({ focus: () => input.value.focus() });
+
+function onChange(event) {
+    if (props.returnObject) {
+        const option = props.options.find(option => option[props.valueKey] === event.target.value)
+
+        emit('update:modelValue', option)
+
+        return
+    }
+
+    emit('update:modelValue', event.target.value)
+}
 </script>
 
 <template>
     <select
         ref="input"
         class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-        :value="modelValue"
+        :class="{ 'bg-gray-50': disabled }"
+        :value="selectValue"
+        :disabled="disabled"
         v-bind="$attrs"
-        @change="$emit('update:modelValue', $event.target.value)"
+        @change="onChange($event)"
     >
-        <option v-for="option of options" :key="option.value" :value="option.value">
-            {{ option.text }}
+        <option value="" disabled>Select one option</option>
+
+        <option v-for="option of options" :key="option[valueKey]" :value="option[valueKey]">
+            {{ option[textKey] }}
         </option>
     </select>
 

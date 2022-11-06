@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Actions\Sender;
+namespace App\Actions\Receiver;
 
 use App\Models\Sender;
 use App\Services\WhatsappService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\DB;
-use Throwable;
 
-class DeleteSender
+class GetGroups
 {
     private WhatsappService $whatsappService;
 
@@ -27,17 +25,14 @@ class DeleteSender
      * Execute the action
      *
      * @param  Sender  $sender
-     * @return void
+     * @return array
      * @throws ConnectionException
      * @throws RequestException
-     * @throws Throwable
      */
-    public function execute(Sender $sender): void
+    public function execute(Sender $sender): array
     {
-        DB::transaction(function() use ($sender) {
-            $sender->delete();
-        });
+        $response = $this->whatsappService->getGroups($sender);
 
-        $this->whatsappService->deleteSession($sender->phone);
+        return $response->json();
     }
 }

@@ -29,6 +29,8 @@ Route::middleware([
 
     Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
         Route::get('{sender}/link-device', [SenderController::class, 'linkDevice'])->name('link_device');
+
+        Route::get('{sender}/groups', [SenderController::class, 'getGroups'])->name('groups');
     });
     Route::resource('senders', SenderController::class)->except([
         'edit',

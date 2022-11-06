@@ -1,7 +1,8 @@
 <script setup>
-import {computed} from 'vue';
+import {computed, nextTick, ref} from 'vue';
 import {Link, useForm} from '@inertiajs/inertia-vue3';
 import {ChevronLeftIcon} from '@heroicons/vue/24/outline'
+import {useBannerStore} from '@/Stores/banner.js';
 import {titleCase} from '@/helpers.js';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FormSection from '@/Components/FormSection.vue';
@@ -10,13 +11,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import TextInput from '@/Components/TextInput.vue';
-import WhatsappInternationalPhoneNumberFormatLink
-    from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
+import WhatsappInternationalPhoneNumberFormatLink from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
 
 const props = defineProps({
     sender: {
-      type: Object,
-      required: true
+        type: Object,
+        required: true
     },
     types: {
         type: Array,
@@ -24,7 +24,9 @@ const props = defineProps({
     }
 })
 
-const typeOptions = computed(() => props.types.reduce((options, type) => {
+const {showDangerBanner} = useBannerStore()
+
+const typeOptions = ref(props.types.reduce((options, type) => {
     options.push({
         text: titleCase(type),
         value: type,
@@ -33,16 +35,51 @@ const typeOptions = computed(() => props.types.reduce((options, type) => {
     return options
 }, []))
 
+const groups = ref([])
+
 const formCreateReceiver = useForm({
     type: props.types[0],
     name: null,
     whatsapp_id: null,
+    group: null,
 })
+
+const isTypeGroup = computed(() => formCreateReceiver.type === 'group')
 
 function onSubmit() {
     formCreateReceiver.post(route('senders.receivers.store', props.sender), {
         preserveScroll: false
     })
+}
+
+async function onChangeType() {
+    await nextTick()
+
+    formCreateReceiver.name = null
+
+    formCreateReceiver.whatsapp_id = null
+
+    formCreateReceiver.group = null
+
+    groups.value = []
+
+    if (isTypeGroup.value) {
+        try {
+            const {data} = await axios.get(route('senders.groups', props.sender))
+
+            groups.value = data
+        } catch (error) {
+            showDangerBanner(error.response.data.message)
+        }
+    }
+}
+
+async function onChangeGroup() {
+    await nextTick()
+
+    formCreateReceiver.name = formCreateReceiver.group.name
+
+    formCreateReceiver.whatsapp_id = formCreateReceiver.group.id
 }
 </script>
 
@@ -81,6 +118,7 @@ function onSubmit() {
                             name="type"
                             :options="typeOptions"
                             class="mt-1 block w-full"
+                            @change="onChangeType"
                         />
 
                         <InputError :message="formCreateReceiver.errors.type" class="mt-2"/>
@@ -89,7 +127,21 @@ function onSubmit() {
                     <div class="col-span-6 sm:col-span-4">
                         <InputLabel for="input-name" value="Name*"/>
 
+                        <SelectInput
+                            v-if="isTypeGroup"
+                            v-model="formCreateReceiver.group"
+                            id="input-name"
+                            name="name"
+                            :options="groups"
+                            text-key="name"
+                            value-key="id"
+                            return-object
+                            class="mt-1 block w-full"
+                            @change="onChangeGroup"
+                        />
+
                         <TextInput
+                            v-else
                             v-model="formCreateReceiver.name"
                             id="input-name"
                             name="name"
@@ -108,11 +160,13 @@ function onSubmit() {
                             id="input-whatsapp-id"
                             name="whatsapp_id"
                             maxlength="255"
+                            :disabled="isTypeGroup"
                             class="mt-1 block w-full"
                         >
-                            <template #help>
-                                When you select type person, please enter the receiver phone number according to the
-                                <WhatsappInternationalPhoneNumberFormatLink/>.
+                            <template v-if="!isTypeGroup" #help>
+                                Please enter the receiver phone number according to the
+                                <WhatsappInternationalPhoneNumberFormatLink/>
+                                .
                             </template>
                         </TextInput>
 

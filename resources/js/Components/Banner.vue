@@ -1,25 +1,37 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
-import { usePage } from '@inertiajs/inertia-vue3';
+import {ref, watch} from 'vue';
+import {storeToRefs} from 'pinia';
+import {usePage} from '@inertiajs/inertia-vue3';
+import {useBannerStore} from '@/Stores/banner.js';
 
-const show = ref(true);
-const style = computed(() => usePage().props.value.jetstream.flash?.bannerStyle || 'success');
-const message = computed(() => usePage().props.value.jetstream.flash?.banner || '');
+const show = ref(true)
 
-watch(message, async () => {
-  show.value = true;
-});
+const { showBanner } = useBannerStore()
+
+const { bannerMessage, bannerStyle } = storeToRefs(useBannerStore())
+
+watch(bannerMessage, async (newMessage) => {
+    if (newMessage) {
+        show.value = true
+    }
+})
+
+showBanner(
+    usePage().props.value.jetstream.flash?.banner,
+    usePage().props.value.jetstream.flash?.bannerStyle,
+)
 </script>
 
 <template>
     <div>
-        <div v-if="show && message" :class="{ 'bg-indigo-500': style == 'success', 'bg-red-700': style == 'danger' }">
+        <div v-if="show && bannerMessage" :class="{ 'bg-indigo-500': bannerStyle === 'success', 'bg-red-700': bannerStyle === 'danger' }">
             <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between flex-wrap">
                     <div class="w-0 flex-1 flex items-center min-w-0">
-                        <span class="flex p-2 rounded-lg" :class="{ 'bg-indigo-600': style == 'success', 'bg-red-600': style == 'danger' }">
+                        <span class="flex p-2 rounded-lg"
+                              :class="{ 'bg-indigo-600': bannerStyle === 'success', 'bg-red-600': bannerStyle === 'danger' }">
                             <svg
-                                v-if="style == 'success'"
+                                v-if="bannerStyle === 'success'"
                                 class="h-5 w-5 text-white"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -35,7 +47,7 @@ watch(message, async () => {
                             </svg>
 
                             <svg
-                                v-if="style == 'danger'"
+                                v-if="bannerStyle === 'danger'"
                                 class="h-5 w-5 text-white"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -52,7 +64,7 @@ watch(message, async () => {
                         </span>
 
                         <p class="ml-3 font-medium text-sm text-white truncate">
-                            {{ message }}
+                            {{ bannerMessage }}
                         </p>
                     </div>
 
@@ -60,7 +72,7 @@ watch(message, async () => {
                         <button
                             type="button"
                             class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
-                            :class="{ 'hover:bg-indigo-600 focus:bg-indigo-600': style == 'success', 'hover:bg-red-600 focus:bg-red-600': style == 'danger' }"
+                            :class="{ 'hover:bg-indigo-600 focus:bg-indigo-600': bannerStyle === 'success', 'hover:bg-red-600 focus:bg-red-600': bannerStyle === 'danger' }"
                             aria-label="Dismiss"
                             @click.prevent="show = false"
                         >

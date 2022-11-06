@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Sender;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
@@ -25,6 +27,7 @@ class WhatsappService
      *
      * @param  string  $phone
      * @return Response
+     * @throws ConnectionException
      * @throws RequestException
      */
     public function createSession(string $phone): Response
@@ -39,10 +42,29 @@ class WhatsappService
      *
      * @param  string  $phone
      * @return Response
+     * @throws ConnectionException
      * @throws RequestException
      */
     public function deleteSession(string $phone): Response
     {
         return $this->http->delete("sessions/{$phone}")->throw();
+    }
+
+    /**
+     * Get sender's groups
+     *
+     * @param  Sender  $sender
+     * @return Response
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function getGroups(Sender $sender): Response
+    {
+        return $this->http
+            ->withHeaders([
+                'session' => $sender->phone,
+            ])
+            ->get('groups')
+            ->throw();
     }
 }

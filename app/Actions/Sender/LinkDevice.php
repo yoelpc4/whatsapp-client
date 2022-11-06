@@ -4,6 +4,7 @@ namespace App\Actions\Sender;
 
 use App\Models\Sender;
 use App\Services\WhatsappService;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 
 class LinkDevice
@@ -25,6 +26,7 @@ class LinkDevice
      *
      * @param  Sender  $sender
      * @return string
+     * @throws ConnectionException
      * @throws RequestException
      */
     public function execute(Sender $sender): string

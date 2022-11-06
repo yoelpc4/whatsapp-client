@@ -1,7 +1,8 @@
 <script setup>
-import {computed} from 'vue';
+import {computed, nextTick, ref} from 'vue';
 import {Link, useForm} from '@inertiajs/inertia-vue3';
 import {ChevronLeftIcon} from '@heroicons/vue/24/outline'
+import {useBannerStore} from '@/Stores/banner.js';
 import {titleCase} from '@/helpers.js';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FormSection from '@/Components/FormSection.vue';
@@ -10,8 +11,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import TextInput from '@/Components/TextInput.vue';
-import WhatsappInternationalPhoneNumberFormatLink
-    from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
+import WhatsappInternationalPhoneNumberFormatLink from '@/Components/WhatsappInternationalPhoneNumberFormatLink.vue';
 
 const props = defineProps({
     sender: {
@@ -28,6 +28,8 @@ const props = defineProps({
     }
 })
 
+const {showDangerBanner} = useBannerStore()
+
 const typeOptions = computed(() => props.types.reduce((options, type) => {
     options.push({
         text: titleCase(type),
@@ -37,16 +39,63 @@ const typeOptions = computed(() => props.types.reduce((options, type) => {
     return options
 }, []))
 
+const groups = ref([])
+
 const formEditReceiver = useForm({
     type: props.receiver.type,
     name: props.receiver.name,
     whatsapp_id: props.receiver.whatsapp_id,
+    group: null,
 })
+
+const isTypeGroup = computed(() => formEditReceiver.type === 'group')
+
+if (isTypeGroup.value) {
+    axios.get(route('senders.groups', props.sender))
+        .then(({data}) => {
+            groups.value = data
+
+            formEditReceiver.group = groups.value.find(group => group.id === props.receiver.whatsapp_id)
+        })
+        .catch(error => {
+            showDangerBanner(error.response.data.message)
+        })
+}
 
 function onSubmit() {
     formEditReceiver.put(route('senders.receivers.update', [props.sender, props.receiver]), {
         preserveScroll: false
     })
+}
+
+async function onChangeType() {
+    await nextTick()
+
+    formEditReceiver.name = null
+
+    formEditReceiver.whatsapp_id = null
+
+    formEditReceiver.group = null
+
+    groups.value = []
+
+    if (isTypeGroup.value) {
+        try {
+            const {data} = await axios.get(route('senders.groups', props.sender))
+
+            groups.value = data
+        } catch (error) {
+            showDangerBanner(error.response.data.message)
+        }
+    }
+}
+
+async function onChangeGroup() {
+    await nextTick()
+
+    formEditReceiver.name = formEditReceiver.group.name
+
+    formEditReceiver.whatsapp_id = formEditReceiver.group.id
 }
 </script>
 
@@ -85,6 +134,7 @@ function onSubmit() {
                             name="type"
                             :options="typeOptions"
                             class="mt-1 block w-full"
+                            @change="onChangeType"
                         />
 
                         <InputError :message="formEditReceiver.errors.type" class="mt-2"/>
@@ -93,7 +143,21 @@ function onSubmit() {
                     <div class="col-span-6 sm:col-span-4">
                         <InputLabel for="input-name" value="Name*"/>
 
+                        <SelectInput
+                            v-if="isTypeGroup"
+                            v-model="formEditReceiver.group"
+                            id="input-name"
+                            name="name"
+                            :options="groups"
+                            text-key="name"
+                            value-key="id"
+                            return-object
+                            class="mt-1 block w-full"
+                            @change="onChangeGroup"
+                        />
+
                         <TextInput
+                            v-else
                             v-model="formEditReceiver.name"
                             id="input-name"
                             name="name"
@@ -111,12 +175,14 @@ function onSubmit() {
                             v-model="formEditReceiver.whatsapp_id"
                             id="input-whatsapp-id"
                             name="whatsapp_id"
-                            class="mt-1 block w-full"
                             maxlength="255"
+                            :disabled="isTypeGroup"
+                            class="mt-1 block w-full"
                         >
-                            <template #help>
-                                When you select type person, please enter the receiver phone number according to the
-                                <WhatsappInternationalPhoneNumberFormatLink/>.
+                            <template v-if="!isTypeGroup" #help>
+                                Please enter the receiver phone number according to the
+                                <WhatsappInternationalPhoneNumberFormatLink/>
+                                .
                             </template>
                         </TextInput>
 
