@@ -7,7 +7,6 @@ use App\Actions\Receiver\GetReceivers;
 use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
-use App\Actions\Sender\LinkDevice;
 use App\Http\Requests\StoreSenderRequest;
 use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -19,7 +18,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use \Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
 
 class SenderController extends Controller
@@ -165,41 +164,6 @@ class SenderController extends Controller
             return redirect()
                 ->route('senders.index')
                 ->with('flash.banner', 'Failed to delete sender')
-                ->with('flash.bannerStyle', 'danger');
-        }
-    }
-
-    /**
-     * Link sender device
-     *
-     * @param  Sender  $sender
-     * @param  LinkDevice  $linkDevice
-     * @return Response|RedirectResponse
-     * @throws AuthorizationException
-     */
-    public function linkDevice(Sender $sender, LinkDevice $linkDevice): Response|RedirectResponse
-    {
-        $this->authorize('update', $sender);
-
-        try {
-            $qrCodeDataUrl = $linkDevice->execute($sender);
-
-            $sender->load('user:id,name');
-
-            return Inertia::render('Senders/LinkDevice', compact('sender', 'qrCodeDataUrl'));
-        } catch (ConnectionException $e) {
-            report($e);
-
-            return redirect()
-                ->route('senders.index')
-                ->with('flash.banner', 'Unable to connect to the whatsapp service')
-                ->with('flash.bannerStyle', 'danger');
-        } catch (RequestException $e) {
-            report($e);
-
-            return redirect()
-                ->route('senders.index')
-                ->with('flash.banner', $e->response->json('message'))
                 ->with('flash.bannerStyle', 'danger');
         }
     }

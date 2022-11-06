@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LinkDeviceController;
 use App\Http\Controllers\ReceiverController;
 use App\Http\Controllers\SenderController;
 use App\Http\Controllers\SendMessageController;
@@ -28,7 +29,7 @@ Route::middleware([
 
     Route::group(['prefix' => 'senders', 'as' => 'senders.'], function () {
         Route::group(['prefix' => '{sender}'], function () {
-            Route::get('link-device', [SenderController::class, 'linkDevice'])->name('link-device');
+            Route::get('link-device', LinkDeviceController::class)->name('link-device');
 
             Route::get('groups', [SenderController::class, 'getGroups'])->name('groups');
 
