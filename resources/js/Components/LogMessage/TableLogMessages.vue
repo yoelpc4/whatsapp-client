@@ -36,11 +36,8 @@ defineEmits(['delete'])
                 <HeaderCell :cell="header('created_at')">
                     Created at
                 </HeaderCell>
-                <HeaderCell :cell="header('sent_at')">
-                    Sent at
-                </HeaderCell>
-                <HeaderCell :cell="header('failed_at')">
-                    Failed at
+                <HeaderCell :cell="header('updated_at')">
+                    Updated at
                 </HeaderCell>
             </tr>
         </template>
@@ -59,11 +56,8 @@ defineEmits(['delete'])
                 <td v-show="show('created_at')">
                     {{ formatDateTime(logMessage.created_at) }}
                 </td>
-                <td v-show="show('sent_at')">
-                    {{ formatDateTime(logMessage.sent_at) || '-' }}
-                </td>
-                <td v-show="show('failed_at')">
-                    {{ formatDateTime(logMessage.failed_at) || '-' }}
+                <td v-show="show('updated_at')">
+                    {{ formatDateTime(logMessage.updated_at) }}
                 </td>
             </tr>
         </template>

@@ -96,8 +96,7 @@ class ReceiverController extends Controller
                     ->column(key: 'message', label: 'Message', sortable: true, searchable: true)
                     ->column(key: 'status', label: 'Status', sortable: true)
                     ->column(key: 'created_at', label: 'Created at', sortable: true)
-                    ->column(key: 'sent_at', label: 'Sent at', sortable: true)
-                    ->column(key: 'failed_at', label: 'Failed at', sortable: true)
+                    ->column(key: 'updated_at', label: 'Updated at', sortable: true)
                     ->defaultSort('-created_at')
                     ->withGlobalSearch()
                     ->selectFilter('status', array_reduce(LogMessage::getStatuses(), function(array $filters, string $status) {

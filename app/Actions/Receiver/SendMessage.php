@@ -50,7 +50,6 @@ class SendMessage
                     'receiver_id' => $receiver->id,
                     'message'     => $data['message'],
                     'status'      => LogMessage::STATUS_SENT,
-                    'sent_at'     => now(),
                 ]);
 
                 return;
@@ -60,7 +59,6 @@ class SendMessage
                 'receiver_id' => $receiver->id,
                 'message'     => $data['message'],
                 'status'      => LogMessage::STATUS_FAILED,
-                'failed_at'   => now(),
             ]);
         });
     }

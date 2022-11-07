@@ -35,8 +35,6 @@ class GetLogMessages
                 'message',
                 'status',
                 'created_at',
-                'sent_at',
-                'failed_at',
                 'updated_at',
             ])
             ->allowedIncludes([
@@ -55,8 +53,6 @@ class GetLogMessages
                 AllowedFilter::exact('status'),
                 'created_at',
                 'updated_at',
-                'sent_at',
-                'failed_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
                         $query->where('message', 'LIKE', "%{$value}%")
@@ -70,8 +66,6 @@ class GetLogMessages
                 'status',
                 'created_at',
                 'updated_at',
-                'sent_at',
-                'failed_at',
             ])
             ->defaultSort('-created_at')
             ->where($logMessage->qualifyColumn('sender_id'), $sender->id)

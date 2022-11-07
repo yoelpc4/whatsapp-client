@@ -20,14 +20,6 @@ class LogMessage extends Model
     use HasFactory;
 
     /**
-     * @inheritdoc
-     */
-    protected $dates = [
-        'sent_at',
-        'failed_at',
-    ];
-
-    /**
      * Get log message's statuses
      *
      * @return string[]
@@ -35,9 +27,9 @@ class LogMessage extends Model
     public static function getStatuses(): array
     {
         return [
-          static::STATUS_PENDING,
-          static::STATUS_SENT,
-          static::STATUS_FAILED,
+            static::STATUS_PENDING,
+            static::STATUS_SENT,
+            static::STATUS_FAILED,
         ];
     }
 
