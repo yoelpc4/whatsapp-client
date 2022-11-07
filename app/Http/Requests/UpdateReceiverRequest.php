@@ -31,7 +31,14 @@ class UpdateReceiverRequest extends FormRequest
                 Rule::in(Receiver::getTypes()),
             ],
             'name'        => 'required|string|max:255',
-            'whatsapp_id' => 'required|string|max:255',
+            'whatsapp_id' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique(Receiver::class, 'whatsapp_id')
+                    ->where('sender_id', $this->sender->id)
+                    ->ignoreModel($this->receiver),
+            ],
         ];
     }
 }
