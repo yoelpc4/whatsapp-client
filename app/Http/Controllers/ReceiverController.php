@@ -8,12 +8,14 @@ use App\Actions\Receiver\DeleteReceiver;
 use App\Actions\Receiver\UpdateReceiver;
 use App\Http\Requests\StoreReceiverRequest;
 use App\Http\Requests\UpdateReceiverRequest;
+use App\Models\LogMessage;
 use App\Models\Receiver;
 use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
@@ -90,16 +92,20 @@ class ReceiverController extends Controller
 
         return Inertia::render('Senders/Receivers/Show', compact('sender', 'receiver', 'logMessages'))
             ->table(function (InertiaTable $table) {
-                $table->column(key: 'index', label: '#')
+                $table->column(key: 'index', label: '#', canBeHidden: false)
                     ->column(key: 'message', label: 'Message', sortable: true, searchable: true)
-                    ->column(key: 'status', label: 'Status', sortable: true, searchable: true)
+                    ->column(key: 'status', label: 'Status', sortable: true)
                     ->column(key: 'created_at', label: 'Created at', sortable: true)
                     ->column(key: 'sent_at', label: 'Sent at', sortable: true)
                     ->column(key: 'failed_at', label: 'Failed at', sortable: true)
                     ->defaultSort('-created_at')
                     ->withGlobalSearch()
-                    ->searchInput(key: 'message', label: 'Message')
-                    ->searchInput(key: 'status', label: 'Status');
+                    ->selectFilter('status', array_reduce(LogMessage::getStatuses(), function(array $filters, string $status) {
+                        $filters[$status] = Str::title($status);
+
+                        return $filters;
+                    }, []), 'Status')
+                    ->searchInput(key: 'message', label: 'Message');
             });
     }
 

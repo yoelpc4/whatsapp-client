@@ -24,6 +24,19 @@ class GetSenders
         $sender = new Sender;
 
         return QueryBuilder::for($sender)
+            ->allowedFields([
+                'id',
+                'user_id',
+                'user.id',
+                'user.name',
+                'name',
+                'phone',
+                'created_at',
+                'updated_at',
+            ])
+            ->allowedIncludes([
+                'user',
+            ])
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('user_id'),
@@ -32,6 +45,7 @@ class GetSenders
                 'name',
                 'phone',
                 'created_at',
+                'updated_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
                         $query->where('name', 'LIKE', "%{$value}%")
@@ -44,6 +58,7 @@ class GetSenders
                 'name',
                 'phone',
                 'created_at',
+                'updated_at',
             ])
             ->defaultSort('-created_at')
             ->where($sender->qualifyColumn('user_id'), $user->id)

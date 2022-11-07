@@ -21,7 +21,7 @@ class Receiver extends Model
     /**
      * Get receiver's types
      *
-     * @return array<string, string>
+     * @return string[]
      */
     public static function getTypes(): array
     {

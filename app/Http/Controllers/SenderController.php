@@ -7,12 +7,15 @@ use App\Actions\Sender\CreateSender;
 use App\Actions\Sender\DeleteSender;
 use App\Actions\Sender\GetSenders;
 use App\Http\Requests\StoreSenderRequest;
+use App\Models\Receiver;
 use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
@@ -36,11 +39,11 @@ class SenderController extends Controller
 
         return Inertia::render('Senders/Index', compact('senders'))
             ->table(function (InertiaTable $table) {
-                $table->column(key: 'index', label: '#')
+                $table->column(key: 'index', label: '#', canBeHidden: false)
                     ->column(key: 'name', label: 'Name', sortable: true, searchable: true)
                     ->column(key: 'phone', label: 'Phone', sortable: true, searchable: true)
                     ->column(key: 'created_at', label: 'Created at', sortable: true)
-                    ->column(key: 'actions', label: 'Actions')
+                    ->column(key: 'actions', label: 'Actions', canBeHidden: false)
                     ->defaultSort('-created_at')
                     ->withGlobalSearch()
                     ->searchInput(key: 'name', label: 'Name')
@@ -106,19 +109,21 @@ class SenderController extends Controller
 
         $receivers = $getReceivers->execute($sender, $request->all());
 
-//        dump($receivers->items()[0]);
-
         return Inertia::render('Senders/Show', compact('sender', 'receivers'))
             ->table(function (InertiaTable $table) {
-                $table->column(key: 'index', label: '#')
-                    ->column(key: 'type', label: 'Type', sortable: true, searchable: true)
+                $table->column(key: 'index', label: '#', canBeHidden: false)
+                    ->column(key: 'type', label: 'Type', sortable: true)
                     ->column(key: 'name', label: 'Name', sortable: true, searchable: true)
                     ->column(key: 'whatsapp_id', label: 'Whatsapp ID', sortable: true, searchable: true)
                     ->column(key: 'created_at', label: 'Created at', sortable: true)
-                    ->column(key: 'actions', label: 'Actions')
+                    ->column(key: 'actions', label: 'Actions', canBeHidden: false)
                     ->defaultSort('-created_at')
                     ->withGlobalSearch()
-                    ->searchInput(key: 'type', label: 'Type')
+                    ->selectFilter('type', array_reduce(Receiver::getTypes(), function(array $filters, string $type) {
+                        $filters[$type] = Str::title($type);
+
+                        return $filters;
+                    }, []), 'Type')
                     ->searchInput(key: 'name', label: 'Name')
                     ->searchInput(key: 'whatsapp_id', label: 'Whatsapp ID');
             });

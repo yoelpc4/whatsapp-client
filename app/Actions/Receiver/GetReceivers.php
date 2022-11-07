@@ -25,6 +25,20 @@ class GetReceivers
         $receiver = new Receiver;
 
         return QueryBuilder::for($receiver)
+            ->allowedFields([
+               'id',
+               'sender_id',
+               'sender.id',
+               'sender.name',
+               'type',
+               'name',
+               'whatsapp_id',
+               'created_at',
+                'updated_at',
+            ])
+            ->allowedIncludes([
+                'sender',
+            ])
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('sender_id'),
@@ -34,6 +48,7 @@ class GetReceivers
                 'name',
                 'whatsapp_id',
                 'created_at',
+                'updated_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
                         $query->where('name', 'LIKE', "%{$value}%")
@@ -47,6 +62,7 @@ class GetReceivers
                 'name',
                 'whatsapp_id',
                 'created_at',
+                'updated_at',
             ])
             ->defaultSort('-created_at')
             ->where($receiver->qualifyColumn('sender_id'), $sender->id)

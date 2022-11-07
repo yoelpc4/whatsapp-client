@@ -28,6 +28,20 @@ class LogMessage extends Model
     ];
 
     /**
+     * Get log message's statuses
+     *
+     * @return string[]
+     */
+    public static function getStatuses(): array
+    {
+        return [
+          static::STATUS_PENDING,
+          static::STATUS_SENT,
+          static::STATUS_FAILED,
+        ];
+    }
+
+    /**
      * Log message belongs to sender
      *
      * @return BelongsTo
