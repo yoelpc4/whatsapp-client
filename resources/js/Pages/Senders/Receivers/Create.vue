@@ -160,6 +160,7 @@ async function onChangeGroup() {
                             id="input-whatsapp-id"
                             name="whatsapp_id"
                             maxlength="255"
+                            :type="isTypeGroup ? 'text' : 'tel'"
                             :disabled="isTypeGroup"
                             class="mt-1 block w-full"
                         >
