@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\LogMessage\GetLogMessages;
 use App\Actions\Receiver\CreateReceiver;
 use App\Actions\Receiver\DeleteReceiver;
 use App\Actions\Receiver\UpdateReceiver;
@@ -12,8 +13,10 @@ use App\Models\Sender;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Throwable;
 
 class ReceiverController extends Controller
@@ -72,16 +75,32 @@ class ReceiverController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  Request  $request
      * @param  Sender  $sender
      * @param  Receiver  $receiver
+     * @param  GetLogMessages  $getLogMessages
      * @return Response
      * @throws AuthorizationException
      */
-    public function show(Sender $sender, Receiver $receiver): Response
+    public function show(Request $request, Sender $sender, Receiver $receiver, GetLogMessages $getLogMessages): Response
     {
         $this->authorize('view', [$receiver, $sender]);
 
-        return Inertia::render('Senders/Receivers/Show', compact('sender', 'receiver'));
+        $logMessages = $getLogMessages->execute($sender, $receiver, $request->all());
+
+        return Inertia::render('Senders/Receivers/Show', compact('sender', 'receiver', 'logMessages'))
+            ->table(function (InertiaTable $table) {
+                $table->column(key: 'index', label: '#')
+                    ->column(key: 'message', label: 'Message', sortable: true, searchable: true)
+                    ->column(key: 'status', label: 'Status', sortable: true, searchable: true)
+                    ->column(key: 'created_at', label: 'Created at', sortable: true)
+                    ->column(key: 'sent_at', label: 'Sent at', sortable: true)
+                    ->column(key: 'failed_at', label: 'Failed at', sortable: true)
+                    ->defaultSort('-created_at')
+                    ->withGlobalSearch()
+                    ->searchInput(key: 'message', label: 'Message')
+                    ->searchInput(key: 'status', label: 'Status');
+            });
     }
 
     /**

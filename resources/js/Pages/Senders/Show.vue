@@ -2,7 +2,7 @@
 import {ref} from 'vue';
 import {Link} from '@inertiajs/inertia-vue3';
 import {ChevronLeftIcon, PlusIcon} from '@heroicons/vue/24/outline'
-import {formatDate} from '@/helpers.js';
+import {formatDateTime} from '@/helpers.js';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ModalDeleteReceiver from '@/Components/Receiver/ModalDeleteReceiver.vue';
 import TableReceivers from '@/Components/Receiver/TableReceivers.vue';
@@ -89,7 +89,7 @@ function onCloseModalDeleteReceiver() {
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ formatDate(sender.created_at) }}
+                                    {{ formatDateTime(sender.created_at) }}
                                 </p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@ function onCloseModalDeleteReceiver() {
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ formatDate(sender.updated_at) }}
+                                    {{ formatDateTime(sender.updated_at) }}
                                 </p>
                             </div>
                         </div>

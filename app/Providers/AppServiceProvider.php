@@ -28,5 +28,18 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
 
         JsonResource::withoutWrapping();
+
+        // uncomment these lines to debugging sql
+//        if (! $this->app->environment('production')) {
+//            \DB::listen(function (\Illuminate\Database\Events\QueryExecuted $query) {
+//                $sql = $query->sql;
+//
+//                $bindings = implode(', ', $query->bindings);
+//
+//                $time = $query->time;
+//
+//                \Log::channel('sql')->info("\nSQL: {$sql}\nBindings: {$bindings}\nTime: {$time}\n\n");
+//            });
+//        }
     }
 }

@@ -59,7 +59,7 @@ class ReceiverPolicy
      */
     public function update(User $user, Receiver $receiver, Sender $sender): Response|bool
     {
-        return $receiver->sender_id === $sender->id && $sender->user_id === $user->id;
+        return $receiver->sender_id === $sender->id && $sender->user_id === $user->id && ! $receiver->hasLogMessages();
     }
 
     /**

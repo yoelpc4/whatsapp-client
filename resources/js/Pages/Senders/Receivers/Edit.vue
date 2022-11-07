@@ -30,7 +30,7 @@ const props = defineProps({
 
 const {showDangerBanner} = useBannerStore()
 
-const typeOptions = ref(() => props.types.reduce((options, type) => {
+const typeOptions = ref(props.types.reduce((options, type) => {
     options.push({
         text: titleCase(type),
         value: type,

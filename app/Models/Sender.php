@@ -33,4 +33,14 @@ class Sender extends Model
     {
         return $this->hasMany(Receiver::class);
     }
+
+    /**
+     * Sender has many log messages
+     *
+     * @return HasMany
+     */
+    public function logMessages(): HasMany
+    {
+        return $this->hasMany(LogMessage::class);
+    }
 }

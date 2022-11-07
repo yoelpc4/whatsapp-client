@@ -1,8 +1,9 @@
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
 import {ChevronLeftIcon} from '@heroicons/vue/24/outline'
-import {formatDate, titleCase} from '@/helpers.js';
+import {formatDateTime, titleCase} from '@/helpers.js';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import TableLogMessages from '@/Components/LogMessage/TableLogMessages.vue';
 
 defineProps({
     sender: {
@@ -12,7 +13,11 @@ defineProps({
     receiver: {
         type: Object,
         required: true
-    }
+    },
+    logMessages: {
+        type: Object,
+        required: true
+    },
 })
 </script>
 
@@ -98,7 +103,7 @@ defineProps({
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ formatDate(receiver.created_at) }}
+                                    {{ formatDateTime(receiver.created_at) }}
                                 </p>
                             </div>
                         </div>
@@ -112,12 +117,22 @@ defineProps({
                                 </p>
 
                                 <p class="text-sm text-gray-500 truncate">
-                                    {{ formatDate(receiver.updated_at) }}
+                                    {{ formatDateTime(receiver.updated_at) }}
                                 </p>
                             </div>
                         </div>
                     </li>
                 </ul>
+            </div>
+
+            <div class="px-4 py-5 bg-white mb-10 sm:p-6 shadow">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        Log Messages
+                    </h2>
+                </div>
+
+                <TableLogMessages :sender="sender" :receiver="receiver" :logMessages="logMessages"/>
             </div>
         </div>
     </AppLayout>

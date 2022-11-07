@@ -13,14 +13,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('receivers', function (Blueprint $table) {
+        Schema::create('log_messages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sender_id');
-            $table->enum('type', ['person', 'group']);
-            $table->string('name');
-            $table->string('whatsapp_id');
+            $table->unsignedBigInteger('receiver_id');
+            $table->string('message');
+            $table->enum('status', ['pending', 'sent', 'failed']);
             $table->timestamps();
+            $table->timestamp('sent_at')->nullable();
+            $table->timestamp('failed_at')->nullable();
             $table->foreign('sender_id')->references('id')->on('senders')->cascadeOnDelete();
+            $table->foreign('receiver_id')->references('id')->on('receivers')->cascadeOnDelete();
         });
     }
 
@@ -31,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('receivers');
+        Schema::dropIfExists('log_messages');
     }
 };

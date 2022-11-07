@@ -1,57 +1,61 @@
 <?php
 
-namespace App\Actions\Receiver;
+namespace App\Actions\LogMessage;
 
+use App\Models\LogMessage;
 use App\Models\Receiver;
 use App\Models\Sender;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\AllowedInclude;
-use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class GetReceivers
+class GetLogMessages
 {
     /**
      * Execute the action
      *
      * @param  Sender  $sender
+     * @param  Receiver  $receiver
      * @param  array  $data
      * @return LengthAwarePaginator
      */
-    public function execute(Sender $sender, array $data): LengthAwarePaginator
+    public function execute(Sender $sender, Receiver $receiver, array $data): LengthAwarePaginator
     {
-        $receiver = new Receiver;
+        $logMessage = new LogMessage;
 
-        return QueryBuilder::for($receiver)
+        return QueryBuilder::for($logMessage)
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('sender_id'),
                 AllowedFilter::exact('sender.id'),
                 'sender.name',
-                AllowedFilter::exact('type'),
-                'name',
-                'whatsapp_id',
+                AllowedFilter::exact('receiver_id'),
+                AllowedFilter::exact('receiver.id'),
+                'receiver.name',
+                'message',
+                AllowedFilter::exact('status'),
                 'created_at',
+                'sent_at',
+                'failed_at',
                 AllowedFilter::callback('global', function (Builder $query, $value) {
                     $query->where(function (Builder $query) use ($value) {
-                        $query->where('name', 'LIKE', "%{$value}%")
-                            ->orWhere('whatsapp_id', 'LIKE', "%{$value}%");
+                        $query->where('message', 'LIKE', "%{$value}%")
+                            ->orWhere('status', 'LIKE', "%{$value}%");
                     });
                 }),
             ])
             ->allowedSorts([
                 'id',
-                'type',
-                'name',
-                'whatsapp_id',
+                'message',
+                'status',
                 'created_at',
+                'sent_at',
+                'failed_at',
             ])
             ->defaultSort('-created_at')
-            ->where($receiver->qualifyColumn('sender_id'), $sender->id)
-            ->with('sender:id,name')
-            ->withCount('logMessages')
+            ->where($logMessage->qualifyColumn('sender_id'), $sender->id)
+            ->where($logMessage->qualifyColumn('receiver_id'), $receiver->id)
             ->paginate($data['perPage'] ?? 15)
             ->withQueryString();
     }

@@ -2,7 +2,7 @@
 import {Link} from '@inertiajs/inertia-vue3';
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {ChatBubbleBottomCenterTextIcon, InformationCircleIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/outline'
-import {formatDate, titleCase} from '@/helpers.js';
+import {formatDateTime, titleCase} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
 defineProps({
@@ -59,7 +59,7 @@ defineEmits(['delete'])
                     {{ receiver.whatsapp_id }}
                 </td>
                 <td v-show="show('created_at')">
-                    {{ formatDate(receiver.created_at) }}
+                    {{ formatDateTime(receiver.created_at) }}
                 </td>
                 <td>
                     <Dropdown align="left" width="32">
@@ -101,6 +101,7 @@ defineEmits(['delete'])
                                         </Link>
 
                                         <Link
+                                            v-if="!receiver.log_messages_count"
                                             :href="route('senders.receivers.edit', [sender, receiver])"
                                             class="flex items-center"
                                         >

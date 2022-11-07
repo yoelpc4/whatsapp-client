@@ -24,12 +24,6 @@ class GetSenders
         $sender = new Sender;
 
         return QueryBuilder::for($sender)
-            ->select([
-                $sender->qualifyColumn('id'),
-                $sender->qualifyColumn('name'),
-                $sender->qualifyColumn('phone'),
-                $sender->qualifyColumn('created_at'),
-            ])
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('user_id'),
@@ -47,7 +41,6 @@ class GetSenders
             ])
             ->allowedSorts([
                 'id',
-                AllowedSort::field('user.name', $user->qualifyColumn('name')),
                 'name',
                 'phone',
                 'created_at',

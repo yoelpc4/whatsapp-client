@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin IdeHelperReceiver
@@ -41,6 +42,16 @@ class Receiver extends Model
     }
 
     /**
+     * Receiver has many log messages
+     *
+     * @return HasMany
+     */
+    public function logMessages(): HasMany
+    {
+        return $this->hasMany(LogMessage::class);
+    }
+
+    /**
      * Determine whether receiver is a person
      *
      * @return bool
@@ -58,5 +69,15 @@ class Receiver extends Model
     public function isGroup(): bool
     {
         return $this->type === static::TYPE_GROUP;
+    }
+
+    /**
+     * Determine whether receiver has log messages
+     *
+     * @return bool
+     */
+    public function hasLogMessages(): bool
+    {
+        return $this->logMessages()->exists();
     }
 }

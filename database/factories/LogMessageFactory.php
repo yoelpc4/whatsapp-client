@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Receiver;
+use App\Models\LogMessage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Receiver>
+ * @extends Factory<LogMessage>
  */
-class ReceiverFactory extends Factory
+class LogMessageFactory extends Factory
 {
     /**
      * Define the model's default state.

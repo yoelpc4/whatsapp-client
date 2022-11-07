@@ -12,6 +12,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class SendMessageController extends Controller
 {
@@ -71,6 +72,13 @@ class SendMessageController extends Controller
             return redirect()
                 ->route('senders.show', $sender)
                 ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.bannerStyle', 'danger');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('senders.show', $sender)
+                ->with('flash.banner', 'Failed to log message')
                 ->with('flash.bannerStyle', 'danger');
         }
     }

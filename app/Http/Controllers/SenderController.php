@@ -106,6 +106,8 @@ class SenderController extends Controller
 
         $receivers = $getReceivers->execute($sender, $request->all());
 
+//        dump($receivers->items()[0]);
+
         return Inertia::render('Senders/Show', compact('sender', 'receivers'))
             ->table(function (InertiaTable $table) {
                 $table->column(key: 'index', label: '#')

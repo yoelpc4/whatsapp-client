@@ -26,8 +26,7 @@ class SenderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'phone'   => $this->faker->phoneNumber,
+            //
         ];
     }
 }

@@ -2,7 +2,7 @@
 import {Link} from '@inertiajs/inertia-vue3';
 import {HeaderCell, Table} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {InformationCircleIcon, QrCodeIcon, TrashIcon} from '@heroicons/vue/24/outline'
-import {formatDate} from '@/helpers.js';
+import {formatDateTime} from '@/helpers.js';
 import Dropdown from '@/Components/Dropdown.vue';
 
 defineProps({
@@ -49,7 +49,7 @@ defineEmits(['delete'])
                     {{ sender.phone }}
                 </td>
                 <td v-show="show('created_at')">
-                    {{ formatDate(sender.created_at) }}
+                    {{ formatDateTime(sender.created_at) }}
                 </td>
                 <td>
                     <Dropdown align="left" width="24">
