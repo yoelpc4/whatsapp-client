@@ -21,7 +21,7 @@ defineEmits(['delete'])
 </script>
 
 <template>
-    <Table :meta="logMessages">
+    <Table :meta="logMessages" preserve-scroll>
         <template #head="{ header }">
             <tr class="font-medium text-xs uppercase text-left tracking-wider text-gray-500 py-3 px-6">
                 <HeaderCell :cell="header('index')">
