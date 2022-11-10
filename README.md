@@ -1,6 +1,6 @@
 # Whatsapp Client
 
-An example project to utilize whatsapp service with features:
+An example project to utilize [whatsapp service](https://github.com/yoelpc4/whatsapp-service) with features:
 
 - Manage sender
 - Manage receiver
