@@ -46,6 +46,8 @@ php artisan config:clear
 php artisan clear-compiled && php artisan ide-helper:generate && php artisan ide-helper:models -M && php artisan ide-helper:meta
 ```
 
+## Serve
+
 - If you use Laravel Valet you can skip this step and directly open the app on the browser
   based on `APP_URL` value on .env, else serve the application with artisan CLI then open the app on the browser
   on `http://localhost:8000`
