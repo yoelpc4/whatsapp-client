@@ -7,6 +7,7 @@ use App\Models\Sender;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class GroupController extends Controller
@@ -32,6 +33,12 @@ class GroupController extends Controller
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         } catch (RequestException $e) {
             report($e);
+
+            if ($e->getCode() === Response::HTTP_UNAUTHORIZED) {
+                return response()->json([
+                    'message' => "Please link the sender's device to continue",
+                ], $e->response->status());
+            }
 
             return response()->json([
                 'message' => $e->response->json('message'),

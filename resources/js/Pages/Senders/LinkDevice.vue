@@ -76,8 +76,10 @@ setTimeout(() => {
                                     <img :src="qrCodeDataUrl" alt="QR Code">
                                 </div>
 
-                                <p class="text-sm text-gray-500 truncate">
-                                    QR code will refresh every 1 minute, you can close this page after scanned the QR code.
+                                <p class="text-sm text-gray-500">
+                                    Please scan the given QR code via the whatsapp app on your device to create your whatsapp session.
+                                    This page will auto refresh every minute.
+                                    You can close this page after scanned the QR code.
                                 </p>
                             </div>
                         </div>

@@ -12,6 +12,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
 
 class SendMessageController extends Controller
@@ -68,6 +69,13 @@ class SendMessageController extends Controller
                 ->with('flash.bannerStyle', 'danger');
         } catch (RequestException $e) {
             report($e);
+
+            if ($e->getCode() === SymfonyResponse::HTTP_UNAUTHORIZED) {
+                return redirect()
+                    ->route('senders.show', $sender)
+                    ->with('flash.banner', "Please link the sender's device to continue")
+                    ->with('flash.bannerStyle', 'danger');
+            }
 
             return redirect()
                 ->route('senders.show', $sender)
