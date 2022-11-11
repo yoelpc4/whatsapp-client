@@ -55,3 +55,9 @@ php artisan clear-compiled && php artisan ide-helper:generate && php artisan ide
 ```shell
 php artisan serve
 ```
+
+- If you want to use laravel sail you can serve with command
+
+```shell
+sail up
+```
