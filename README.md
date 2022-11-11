@@ -59,5 +59,5 @@ php artisan serve
 - If you want to use laravel sail you can serve with command
 
 ```shell
-sail up
+sail up -d
 ```
