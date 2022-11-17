@@ -39,6 +39,19 @@ class WhatsappService
     }
 
     /**
+     * Find existing session
+     *
+     * @param  string  $phone
+     * @return Response
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function findSession(string $phone): Response
+    {
+        return $this->http->get("sessions/{$phone}")->throw();
+    }
+
+    /**
      * Delete existing session
      *
      * @param  string  $phone
