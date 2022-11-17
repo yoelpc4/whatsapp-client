@@ -41,27 +41,27 @@ class WhatsappService
     /**
      * Find existing session
      *
-     * @param  string  $phone
+     * @param  Sender  $sender
      * @return Response
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function findSession(string $phone): Response
+    public function findSession(Sender $sender): Response
     {
-        return $this->http->get("sessions/{$phone}")->throw();
+        return $this->http->get("sessions/{$sender->phone}")->throw();
     }
 
     /**
      * Delete existing session
      *
-     * @param  string  $phone
+     * @param  Sender  $sender
      * @return Response
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function deleteSession(string $phone): Response
+    public function deleteSession(Sender $sender): Response
     {
-        return $this->http->delete("sessions/{$phone}")->throw();
+        return $this->http->delete("sessions/{$sender->phone}")->throw();
     }
 
     /**
