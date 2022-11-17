@@ -38,6 +38,6 @@ class DeleteSender
             $sender->delete();
         });
 
-        $this->whatsappService->deleteSession($sender->phone);
+        $this->whatsappService->deleteSession($sender);
     }
 }
