@@ -52,6 +52,24 @@ class WhatsappService
     }
 
     /**
+     * Get sender's persons
+     *
+     * @param  Sender  $sender
+     * @return Response
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function getPersons(Sender $sender): Response
+    {
+        return $this->http
+            ->withHeaders([
+                'session' => $sender->phone,
+            ])
+            ->get('persons')
+            ->throw();
+    }
+
+    /**
      * Get sender's groups
      *
      * @param  Sender  $sender
