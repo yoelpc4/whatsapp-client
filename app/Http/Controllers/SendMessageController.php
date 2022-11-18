@@ -77,9 +77,15 @@ class SendMessageController extends Controller
                     ->with('flash.bannerStyle', 'danger');
             }
 
+            $message = $e->response->json('message');
+
+            if (is_array($message)) {
+                $message = $message[0];
+            }
+
             return redirect()
                 ->route('senders.show', $sender)
-                ->with('flash.banner', $e->response->json('message'))
+                ->with('flash.banner', $message)
                 ->with('flash.bannerStyle', 'danger');
         } catch (Throwable $e) {
             report($e);
