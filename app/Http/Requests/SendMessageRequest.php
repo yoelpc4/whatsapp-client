@@ -24,7 +24,7 @@ class SendMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'message' => 'required|string',
+            'text' => 'required|string',
         ];
     }
 }

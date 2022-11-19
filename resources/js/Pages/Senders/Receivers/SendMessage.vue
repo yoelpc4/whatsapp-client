@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const formSendMessage = useForm({
-    message: null,
+    text: null,
     group: null,
 })
 
@@ -82,16 +82,16 @@ function onSubmit() {
                     </div>
 
                     <div class="col-span-6 sm:col-span-4">
-                        <InputLabel for="input-message" value="Message*"/>
+                        <InputLabel for="input-text" value="Text*"/>
 
                         <TextareaInput
-                            v-model="formSendMessage.message"
-                            id="input-message"
-                            name="message"
+                            v-model="formSendMessage.text"
+                            id="input-text"
+                            name="text"
                             class="mt-1 block w-full"
                         />
 
-                        <InputError :message="formSendMessage.errors.message" class="mt-2"/>
+                        <InputError :message="formSendMessage.errors.text" class="mt-2"/>
                     </div>
                 </template>
 

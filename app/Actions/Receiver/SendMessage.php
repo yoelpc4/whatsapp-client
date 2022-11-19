@@ -39,16 +39,16 @@ class SendMessage
     public function execute(Sender $sender, Receiver $receiver, array $data): void
     {
         if ($receiver->isGroup()) {
-            $response = $this->whatsappService->sendMessageToGroup($sender, $receiver, $data['message']);
+            $response = $this->whatsappService->sendMessageToGroup($sender, $receiver, $data['text']);
         } else {
-            $response = $this->whatsappService->sendMessageToPerson($sender, $receiver, $data['message']);
+            $response = $this->whatsappService->sendMessageToPerson($sender, $receiver, $data['text']);
         }
 
         DB::transaction(function () use ($sender, $receiver, $response, $data) {
             if ($response->successful()) {
                 $sender->logMessages()->create([
                     'receiver_id' => $receiver->id,
-                    'message'     => $data['message'],
+                    'message'     => $data['text'],
                     'status'      => LogMessage::STATUS_SENT,
                 ]);
 
@@ -57,7 +57,7 @@ class SendMessage
 
             $sender->logMessages()->create([
                 'receiver_id' => $receiver->id,
-                'message'     => $data['message'],
+                'message'     => $data['text'],
                 'status'      => LogMessage::STATUS_FAILED,
             ]);
         });
