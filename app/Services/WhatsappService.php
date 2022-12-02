@@ -105,12 +105,12 @@ class WhatsappService
      *
      * @param  Sender  $sender
      * @param  Receiver  $receiver
-     * @param  string  $message
+     * @param  string  $text
      * @return Response
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function sendMessageToPerson(Sender $sender, Receiver $receiver, string $message): Response
+    public function sendMessageToPerson(Sender $sender, Receiver $receiver, string $text): Response
     {
         return $this->http
             ->withHeaders([
@@ -118,7 +118,7 @@ class WhatsappService
             ])
             ->post('persons/send-message', [
                 'whatsappId' => $receiver->whatsapp_id,
-                'message'    => $message,
+                'text'       => $text,
             ])
             ->throw();
     }
@@ -128,12 +128,12 @@ class WhatsappService
      *
      * @param  Sender  $sender
      * @param  Receiver  $receiver
-     * @param  string  $message
+     * @param  string  $text
      * @return Response
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function sendMessageToGroup(Sender $sender, Receiver $receiver, string $message): Response
+    public function sendMessageToGroup(Sender $sender, Receiver $receiver, string $text): Response
     {
         return $this->http
             ->withHeaders([
@@ -141,7 +141,7 @@ class WhatsappService
             ])
             ->post('groups/send-message', [
                 'whatsappId' => $receiver->whatsapp_id,
-                'message'    => $message,
+                'text'       => $text,
             ])
             ->throw();
     }

@@ -40,24 +40,30 @@ php artisan migrate --seed
 php artisan config:clear
 ```
 
-- Generate ide helper files
-
-```shell
-php artisan clear-compiled && php artisan ide-helper:generate && php artisan ide-helper:models -M && php artisan ide-helper:meta
-```
-
 ## Serve
 
-- If you use Laravel Valet you can skip this step and directly open the app on the browser
-  based on `APP_URL` value on .env, else serve the application with artisan CLI then open the app on the browser
-  on `http://localhost:8000`
+- Serve the application with artisan CLI then open the app on the browser on `http://localhost:8000`
 
 ```shell
 php artisan serve
 ```
 
-- If you want to use laravel sail you can serve with command
+- If you want to use laravel sail, turn off any service/web server that used port 80 on your local machine
+  start your docker service then you can update the `.env` file contents
+
+```dotenv
+APP_URL=http://localhost
+DB_HOST=mysql
+```
+
+serve with sail artisan CLI then open the app on the browser on `http://localhost`
 
 ```shell
-sail up -d
+./vendor/bin/sail up -d
+```
+
+run migration with command
+
+```shell
+./vendor/bin/sail artisan migrate
 ```
