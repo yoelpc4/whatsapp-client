@@ -32,7 +32,9 @@ return [
     ],
 
     'whatsapp' => [
-        'url' => env('WHATSAPP_SERVICE_URL'),
+        'url'      => env('WHATSAPP_SERVICE_URL'),
+        'username' => env('WHATSAPP_SERVICE_USERNAME'),
+        'password' => env('WHATSAPP_SERVICE_PASSWORD'),
     ],
 
 ];

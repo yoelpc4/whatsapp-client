@@ -21,7 +21,6 @@ const props = defineProps({
 
 const formSendMessage = useForm({
     text: null,
-    group: null,
 })
 
 function onSubmit() {

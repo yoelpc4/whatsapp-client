@@ -20,7 +20,9 @@ class WhatsappService
      */
     public function __construct()
     {
-        $this->http = Http::retry(3, 100)->baseUrl(config('services.whatsapp.url'));
+        $this->http = Http::retry(3, 100)
+            ->baseUrl(config('services.whatsapp.url'))
+            ->withBasicAuth(config('services.whatsapp.username'), config('services.whatsapp.password'));
     }
 
     /**
